@@ -1,0 +1,4 @@
+{{define "content"}}
+  <h1> {{with $x := index .Data.flavorA.Blocks 0 0}}{{$x.Content}}{{end}} </h1>
+  <p> {{.Data.flavorA.Summary}} </p>
+{{end}}
