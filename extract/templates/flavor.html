@@ -1,0 +1,25 @@
+{{define "content"}}{{template "flavor" .}}{{end}}
+
+{{define "flavor"}}
+  <h1> {{template "string" .Nest .Data.flavorA.Title}} </h1>
+  <p> {{.Data.flavorA.Summary}} </p>
+  {{range .Data.flavorA.Blocks}}
+  {{template "block" $.Nest .}}
+  {{end}}
+{{end}}
+
+{{define "string"}}
+{{if .Data.Missing}}
+<div class="missing">{{.GetText "missing content"}}</div>
+{{else}}
+<div>{{.Data.Content}}</div>
+{{end}}
+{{end}}
+
+{{define "block"}}
+{{if .Data.Missing}}
+<p class="missing">{{.GetText "missing content"}}</p>
+{{else}}
+<p>{{range .Data.Units}}{{template "string" $.Nest .}}{{end}}</p>
+{{end}}
+{{end}}
