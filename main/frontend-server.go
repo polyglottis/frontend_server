@@ -2,27 +2,25 @@
 package main
 
 import (
-	"flag"
 	"log"
 
 	"github.com/polyglottis/frontend_server"
+	"github.com/polyglottis/platform/config"
 	"github.com/polyglottis/platform/frontend/rpc"
 )
 
-var tcpAddr = flag.String("tcp", ":18658", "TCP address of frontend server")
-
 func main() {
-	flag.Parse()
+	c := config.Get()
 
 	main := frontend_server.New()
-	s := rpc.NewFrontendServer(main, *tcpAddr)
+	s := rpc.NewFrontendServer(main, c.Frontend)
 
 	err := s.RegisterAndListen()
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer s.Close()
-	log.Printf("Frontend Server listening on %v", *tcpAddr)
+	log.Printf("Frontend Server listening on %v", c.Frontend)
 
 	s.Accept()
 }
