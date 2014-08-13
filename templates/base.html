@@ -2,9 +2,20 @@
 <html>
   <head>
     <title>{{.Title}}</title>
+    
+    <link href="/static/css/extract.css" media="screen, projection" rel="stylesheet" type="text/css" />
   </head>
 
   <body>
+    <div class="banner">
+      <div id="bannerContent" class="bannerContent">
+        <a class="home" href="/">
+					<div class="logo banner-logo_50"></div>
+          <div class="bannerTitle">Polyglottis</div>
+        </a>
+        <div class="clearboth"></div>
+      </div>
+    </div>
     <div>
       {{template "content" .}}
     </div>

@@ -1,11 +1,33 @@
-{{define "content"}}{{template "flavor" .}}{{end}}
+{{define "content"}}
+<div class="panel">
+	<div class="panelOptionList">
+		<div class="panelOption">
+			<input type="checkbox" id="opt-translation" checked data-dojo-type="dijit/form/CheckBox"/>
+			<label for="opt-translation" id="i18n-translation">Translation</label>
+		</div>
+		<div class="panelOption">
+			<input type="checkbox" id="opt-transcript" data-dojo-type="dijit/form/CheckBox"/>
+			<label for="opt-transcript" id="i18n-transcription">Transcription</label>
+		</div>
+	</div>
+</div>
+<div class="content" id="content">
+	<ul id="actions" class="actions"></ul>
+	{{template "flavor" .}}
+</div>
+{{end}}
 
 {{define "flavor"}}
+	<div class="extractContent" id="extractContent">
   <h1> {{template "string" .Nest .Data.flavorA.Title}} </h1>
-  <p> {{.Data.flavorA.Summary}} </p>
+	<div id="body">
   {{range .Data.flavorA.Blocks}}
   {{template "block" $.Nest .}}
   {{end}}
+		</div>
+		<hr/>
+  <p> {{.Data.flavorA.Summary}} </p>
+	</div>
 {{end}}
 
 {{define "string"}}
