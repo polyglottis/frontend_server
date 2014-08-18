@@ -4,7 +4,7 @@ package main
 import (
 	"log"
 
-	"github.com/polyglottis/frontend_server"
+	"github.com/polyglottis/frontend_server/register"
 	"github.com/polyglottis/platform/config"
 	"github.com/polyglottis/platform/frontend/rpc"
 )
@@ -12,7 +12,7 @@ import (
 func main() {
 	c := config.Get()
 
-	main := frontend_server.New()
+	main := register.NewServer()
 	s := rpc.NewFrontendServer(main, c.Frontend)
 
 	err := s.RegisterAndListen()

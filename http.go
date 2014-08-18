@@ -3,22 +3,13 @@ package frontend_server
 import (
 	"io"
 
-	"github.com/polyglottis/frontend_server/extract"
 	"github.com/polyglottis/frontend_server/server"
 	"github.com/polyglottis/frontend_server/templates"
 	"github.com/polyglottis/platform/frontend"
 	"github.com/polyglottis/platform/i18n"
 )
 
-type Server struct {
-	*extract.Server
-}
-
-func New() *Server {
-	return &Server{
-		Server: extract.NewServer(),
-	}
-}
+type Server struct{}
 
 var homeTmpl = templates.Parse("templates/home")
 

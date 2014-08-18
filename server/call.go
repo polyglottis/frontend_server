@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/url"
 
 	"github.com/polyglottis/frontend_server/templates"
 	"github.com/polyglottis/platform/frontend"
@@ -14,18 +15,12 @@ import (
 )
 
 func Call(context *frontend.Context, f func(io.Writer, *TmplArgs) error) (answer []byte, err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			log.Println("Recovered from", r)
-			err = r.(error)
-			return
-		}
-	}()
 	localizer, err := getLocalizer(context.Locale)
 	if err != nil {
 		return nil, err
 	}
 	args := &TmplArgs{
+		Context:   context,
 		Localizer: localizer,
 	}
 
@@ -53,7 +48,8 @@ func getLocalizer(lang language.Code) (i18n.Localizer, error) {
 }
 
 type TmplArgs struct {
-	Data map[string]interface{}
+	Data    map[string]interface{}
+	Context *frontend.Context
 	i18n.Localizer
 }
 
@@ -82,12 +78,44 @@ func (a *TmplArgs) Title() (string, error) {
 	}
 }
 
+func (a *TmplArgs) LanguageA() string {
+	return a.languageString(a.Context.LanguageA)
+}
+
+func (a *TmplArgs) LanguageB() string {
+	return a.languageString(a.Context.LanguageB)
+}
+
+func (a *TmplArgs) languageString(code language.Code) string {
+	return a.GetText(i18n.Key("lang_" + string(code)))
+}
+
 func (a *TmplArgs) title(t string, addBrand bool) string {
 	if addBrand {
 		return t + " - Polyglottis"
 	} else {
 		return t
 	}
+}
+
+func (a *TmplArgs) LinkEdit(which, what string) string {
+	query := url.Values{}
+	if len(a.Context.ExtractId) == 0 {
+		log.Println("Unable to generate edit link when extrat id is not set.")
+		return ""
+	}
+	query.Set("id", string(a.Context.ExtractId))
+	query.Set("a", string(a.Context.LanguageA))
+	if len(a.Context.LanguageB) != 0 {
+		query.Set("b", string(a.Context.LanguageB))
+	}
+	switch which {
+	case "a", "b":
+		query.Set("focus", which)
+	default:
+		log.Println("Argument \"which\" should be either \"a\" or \"b\"")
+	}
+	return fmt.Sprintf("/extract/edit/%s?%s", what, query.Encode())
 }
 
 type nestedArgs struct {

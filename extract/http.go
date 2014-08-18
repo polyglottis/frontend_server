@@ -11,15 +11,11 @@ import (
 	"github.com/polyglottis/platform/language"
 )
 
-type Server struct{}
+type ExtractServer struct{}
 
-func NewServer() *Server {
-	return &Server{}
-}
+var flavorTmpl = templates.Parse("extract/templates/frame", "extract/templates/flavor")
 
-var flavorTmpl = templates.Parse("extract/templates/flavor")
-
-func (s *Server) Extract(context *frontend.Context, extract *content.Extract) ([]byte, error) {
+func (s *ExtractServer) Extract(context *frontend.Context, extract *content.Extract) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
 		args.Data = map[string]interface{}{
 			"title": "home_page",
@@ -28,12 +24,13 @@ func (s *Server) Extract(context *frontend.Context, extract *content.Extract) ([
 	})
 }
 
-func (s *Server) Flavor(context *frontend.Context, extract *content.Extract, a, b *frontend.FlavorTriple) ([]byte, error) {
+func (s *ExtractServer) Flavor(context *frontend.Context, extract *content.Extract, a, b *frontend.FlavorTriple) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
-		f := extractFlavor(a.Text)
+		f := extractFlavor(extract.Shape(), a.Text)
 		args.Data = map[string]interface{}{
-			"title":   getTitle(f),
-			"flavorA": f,
+			"title":     getTitle(f),
+			"flavorA":   f,
+			"languageA": context.LanguageA,
 		}
 		return flavorTmpl.Execute(w, args)
 	})
@@ -71,7 +68,7 @@ type String struct {
 	Missing bool
 }
 
-func extractFlavor(flavor *content.Flavor) *Flavor {
+func extractFlavor(shape content.ExtractShape, flavor *content.Flavor) *Flavor {
 	f := &Flavor{
 		Id:       flavor.Id,
 		Summary:  flavor.Summary,
@@ -84,42 +81,16 @@ func extractFlavor(flavor *content.Flavor) *Flavor {
 			f.Title = String{Content: u.Content}
 		}
 	}
-	f.Blocks = extractBlocks(flavor.Blocks)
+	shape.IterateFlavorBody(flavor, func(blockId content.BlockId) {
+		f.Blocks = append(f.Blocks, &Block{Id: blockId})
+	}, func(blockId content.BlockId, unitId content.UnitId, u *content.Unit) {
+		unit := &Unit{Id: unitId}
+		if u == nil {
+			unit.Missing = true
+		} else {
+			unit.Content = u.Content
+		}
+		f.Blocks[len(f.Blocks)-1].Units = append(f.Blocks[len(f.Blocks)-1].Units, unit)
+	}, nil)
 	return f
-}
-
-func extractBlocks(blocks content.BlockSlice) []*Block {
-	if len(blocks) == 0 {
-		return []*Block{{Missing: true}}
-	}
-	b := make([]*Block, 0, len(blocks))
-	lastBlockId := content.BlockId(1)
-	for _, block := range blocks {
-		curBlockId := block[0].BlockId
-		if curBlockId == 1 {
-			continue
-		}
-		for ; lastBlockId < curBlockId-1; lastBlockId++ {
-			b = append(b, &Block{Id: lastBlockId, Missing: true})
-		}
-		lastBlockId = curBlockId
-		b = append(b, &Block{Id: curBlockId, Units: extractUnits(block)})
-	}
-	if len(b) == 0 {
-		return []*Block{{Missing: true}}
-	}
-	return b
-}
-
-func extractUnits(units content.UnitSlice) []*Unit {
-	u := make([]*Unit, 0, len(units))
-	lastUnitId := content.UnitId(0)
-	for _, unit := range units {
-		for ; lastUnitId < unit.Id-1; lastUnitId++ {
-			u = append(u, &Unit{Id: lastUnitId, String: String{Missing: true}})
-		}
-		lastUnitId = unit.Id
-		u = append(u, &Unit{Id: unit.Id, String: String{Content: unit.Content}})
-	}
-	return u
 }

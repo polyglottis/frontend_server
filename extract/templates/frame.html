@@ -1,0 +1,34 @@
+{{define "content"}}
+<div class="panel">
+	<div class="panelOptionList">
+		<div class="panelOption">
+			<input type="checkbox" id="opt-translation" checked data-dojo-type="dijit/form/CheckBox"/>
+			<label for="opt-translation" id="i18n-translation">{{.GetText "Translation"}}</label>
+		</div>
+		<div class="panelOption">
+			<input type="checkbox" id="opt-transcript" data-dojo-type="dijit/form/CheckBox"/>
+			<label for="opt-transcript" id="i18n-transcription">{{.GetText "Transcription"}}</label>
+		</div>
+	</div>
+</div>
+<div class="content" id="content">
+	{{template "actions" .}}
+	{{template "frame-content" .}}
+</div>
+{{end}}
+
+{{define "actions"}}
+<ul id="actions" class="actions">
+<li><a class="action actionable">Test</a></li>
+<li class="menu"><span class="label action actionable">{{.GetText "Edit"}}</span><div class="menuBody">
+<div>
+{{.LanguageA}}
+<ul>
+<li><a href={{.LinkEdit "a" "text"}} class="action actionable">{{.GetText "Text"}}</a></li>
+<li><a class="action actionable">{{.GetText "Audio"}}</a></li>
+<li><a class="action actionable">{{.GetText "Transcription"}}</a></li>
+</ul>
+</div>
+</div></li>
+</ul>
+{{end}}

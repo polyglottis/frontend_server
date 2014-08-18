@@ -1,0 +1,22 @@
+{{define "frame-content"}}
+	<div class="extractContent edit">
+	<div class="editTitle">
+		<h1>{{.GetText "Block"}} 1 ({{.GetText "Title"}})</h1>
+		{{if and (.OtherLanguage) (.TitleOther)}}
+		<div><span class="language">{{.LanguageOther}}:</span><span>{{.TitleOther}}</span></div>
+		{{end}}
+		<div><span class="language">{{.LanguageUnderFocus}}:</span><input value={{.TitleUnderFocus}} type="text" id="title"/></div>
+	</div>
+	<div class="editBody">
+		{{range .EditBlocks}}
+			<h1>{{$.GetText "Block"}} {{.Id}}</h1>
+			{{range .Lines}}
+				{{if $.OtherLanguage}}
+				<div><span class="language">{{$.LanguageOther}}:</span><span>{{.ContentOther}}</span></div>
+				{{end}}
+				<div><span class="language">{{$.LanguageUnderFocus}}:</span><textarea>{{.ContentUnderFocus}}</textarea></div>
+			{{end}}
+		{{end}}
+	</div>
+	</div>
+{{end}}
