@@ -21,18 +21,16 @@ var flavorTmpl = templates.Parse("extract/templates/flavor")
 
 func (s *Server) Extract(context *frontend.Context, extract *content.Extract) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
-		f := extractFlavor(extract.Flavors[0])
 		args.Data = map[string]interface{}{
-			"title":   getTitle(f),
-			"flavorA": f,
+			"title": "home_page",
 		}
 		return flavorTmpl.Execute(w, args)
 	})
 }
 
-func (s *Server) Flavor(context *frontend.Context, extract *content.Extract, flavor *content.Flavor) ([]byte, error) {
+func (s *Server) Flavor(context *frontend.Context, extract *content.Extract, a, b *frontend.FlavorTriple) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
-		f := extractFlavor(flavor)
+		f := extractFlavor(a.Text)
 		args.Data = map[string]interface{}{
 			"title":   getTitle(f),
 			"flavorA": f,
