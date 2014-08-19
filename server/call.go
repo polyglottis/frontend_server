@@ -78,6 +78,14 @@ func (a *TmplArgs) Title() (string, error) {
 	}
 }
 
+func (a *TmplArgs) LoggedIn() bool {
+	return len(a.Context.User) != 0
+}
+
+func (a *TmplArgs) UserName() string {
+	return string(a.Context.User)
+}
+
 func (a *TmplArgs) LanguageA() string {
 	return a.languageString(a.Context.LanguageA)
 }

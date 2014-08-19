@@ -5,7 +5,7 @@
 		{{if and (.OtherLanguage) (.TitleOther)}}
 		<div><span class="language">{{.LanguageOther}}:</span><span>{{.TitleOther}}</span></div>
 		{{end}}
-		<div><span class="language">{{.LanguageUnderFocus}}:</span><input value={{.TitleUnderFocus}} type="text" id="title"/></div>
+		<div><span class="language">{{.LanguageUnderFocus}}:</span><input value={{.TitleUnderFocus}} type="text" id="title"></div>
 	</div>
 	<div class="editBody">
 		{{range .EditBlocks}}

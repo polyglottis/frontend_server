@@ -1,0 +1,20 @@
+{{define "content"}}
+<div class="form">
+	<h1>{{.Data.form.Header}}</h1>
+	{{if .Data.form.Error}}
+	<div class="formError">{{.GetText .Data.form.Error}}</div>
+	{{end}}
+	<form method="post">
+	{{range .Data.form.Fields}}
+	<div>{{$.GetText .Property}}</div>
+	<input type={{.Type}} name={{.Name}} value={{.Value}}>
+	{{if .Error}}<div class="error">{{$.GetText .Error}}</div>{{end}}
+	{{if .Hint}}<div class="hint">{{$.GetText .Hint}}</div>{{end}}
+	{{end}}
+	{{if .Data.form.Extra}}
+	<div class="extra">{{.Data.form.Extra}}</div>
+	{{end}}
+	<div><input type="submit" value={{.GetText .Data.form.Submit}}></div>
+	</form>
+</div>
+{{end}}

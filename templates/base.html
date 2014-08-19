@@ -2,10 +2,8 @@
 <html>
   <head>
     <title>{{.Title}}</title>
-    
     <link href="/static/css/extract.css" media="screen, projection" rel="stylesheet" type="text/css" />
   </head>
-
   <body>
     <div class="banner">
       <div id="bannerContent" class="bannerContent">
@@ -13,11 +11,18 @@
 					<div class="logo banner-logo_50"></div>
           <div class="bannerTitle">Polyglottis</div>
         </a>
+        <div class="account">
+        {{if .LoggedIn}}
+        {{.UserName}}
+        <a class="button signout" href="/user/signout">{{.GetText "Sign out"}}</a>
+        {{else}}
+        <a class="button signup" href="/user/signup">{{.GetText "Create an account"}}</a>
+        <a class="button signin" href="/user/signin{{if ne .Context.Url "/"}}?return_to={{.Context.Url}}{{end}}">{{.GetText "Sign in"}}</a>
+        {{end}}
+        </div>
         <div class="clearboth"></div>
       </div>
     </div>
-    <div>
-      {{template "content" .}}
-    </div>
+    {{template "content" .}}
   </body>
 </html>
