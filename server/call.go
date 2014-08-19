@@ -14,14 +14,21 @@ import (
 	"github.com/polyglottis/platform/language"
 )
 
-func Call(context *frontend.Context, f func(io.Writer, *TmplArgs) error) (answer []byte, err error) {
+func GetTmplArgs(context *frontend.Context) (*TmplArgs, error) {
 	localizer, err := getLocalizer(context.Locale)
 	if err != nil {
 		return nil, err
 	}
-	args := &TmplArgs{
+	return &TmplArgs{
 		Context:   context,
 		Localizer: localizer,
+	}, nil
+}
+
+func Call(context *frontend.Context, f func(io.Writer, *TmplArgs) error) (answer []byte, err error) {
+	args, err := GetTmplArgs(context)
+	if err != nil {
+		return nil, err
 	}
 
 	buffer := new(bytes.Buffer)
