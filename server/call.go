@@ -9,6 +9,7 @@ import (
 	"net/url"
 
 	"github.com/polyglottis/frontend_server/templates"
+localizer	"github.com/polyglottis/frontend_server/i18n"
 	"github.com/polyglottis/platform/frontend"
 	"github.com/polyglottis/platform/i18n"
 	"github.com/polyglottis/platform/language"
@@ -50,14 +51,14 @@ func Call(context *frontend.Context, f func(io.Writer, *TmplArgs) error) (answer
 
 var ErrTmpl = templates.Parse("templates/error")
 
-func getLocalizer(lang language.Code) (i18n.Localizer, error) {
-	return i18n.NewLocalizer(lang), nil
+func getLocalizer(lang language.Code) (localizer.Localizer, error) {
+	return localizer.NewLocalizer(lang), nil
 }
 
 type TmplArgs struct {
 	Data    map[string]interface{}
 	Context *frontend.Context
-	i18n.Localizer
+	localizer.Localizer
 }
 
 func (a *TmplArgs) GetKey(k string) (i18n.Key, error) {
@@ -135,7 +136,7 @@ func (a *TmplArgs) LinkEdit(which, what string) string {
 
 type nestedArgs struct {
 	Data interface{}
-	i18n.Localizer
+	localizer.Localizer
 }
 
 func (a *TmplArgs) Nest(data interface{}) *nestedArgs {
