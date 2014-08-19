@@ -8,28 +8,21 @@ import (
 	"github.com/polyglottis/platform/i18n"
 )
 
-func (s *UserServer) SignIn(context *frontend.Context) ([]byte, error) {
+func (s *UserServer) ForgotPassword(context *frontend.Context) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
 		form := &server.Form{
-			Header: "Sign in",
-			Submit: "Sign in",
+			Header: "Password forgotten",
+			Submit: "Submit",
 			Fields: []*server.FormField{{
-				Name:     "User",
+				Name:     "Email",
 				Type:     server.InputText,
-				Property: "Username or email",
-			}, {
-				Name:     "Password",
-				Type:     server.InputPassword,
-				Property: "Password",
-				Link: &server.Link{
-					Href: "/user/forgot_password",
-					Text: "(I have forgotten my password)",
-				},
+				Property: "Email",
+				Hint:     "Enter your email address.",
 			}},
 		}
 		form.Apply(context)
 		args.Data = map[string]interface{}{
-			"title": i18n.Key("Sign In"),
+			"title": i18n.Key("Forgot your password?"),
 			"form":  form,
 		}
 		return formTmpl.Execute(w, args)

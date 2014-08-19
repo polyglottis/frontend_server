@@ -27,6 +27,12 @@ type FormField struct {
 	Value    string
 	Error    i18n.Key
 	Hint     i18n.Key
+	Link     *Link
+}
+
+type Link struct {
+	Href string
+	Text i18n.Key
 }
 
 func (f *Form) Apply(c *frontend.Context) {
