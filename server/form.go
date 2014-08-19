@@ -7,7 +7,7 @@ import (
 
 type Form struct {
 	Header i18n.Key
-	Error i18n.Key
+	Error  i18n.Key
 	Fields []*FormField
 	Extra  i18n.Key
 	Submit i18n.Key
