@@ -1,0 +1,12 @@
+[
+  {
+    "id": "Create an account",
+    "translation": "Benutzerkonto erstellen"
+  }, {
+		"id": "Sign in",
+		"translation": "Anmelden"
+	}, {
+		"id": "Sign out",
+		"translation": "Abmelden"
+	}
+]
