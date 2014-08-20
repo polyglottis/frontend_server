@@ -4,20 +4,18 @@ import (
 	"io"
 
 	"github.com/polyglottis/frontend_server/server"
-	"github.com/polyglottis/frontend_server/templates"
 	"github.com/polyglottis/platform/frontend"
 	"github.com/polyglottis/platform/i18n"
 )
 
 type UserServer struct{}
 
-var formTmpl = templates.Parse("templates/form")
-
 func (s *UserServer) SignUp(context *frontend.Context) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
 		form := &server.Form{
 			Header: "Create your personal account",
 			Submit: "Create an account",
+			Class:  "compact",
 			Fields: []*server.FormField{{
 				Name:     "User",
 				Type:     server.InputText,
@@ -35,7 +33,8 @@ func (s *UserServer) SignUp(context *frontend.Context) ([]byte, error) {
 			"title": i18n.Key("Account Creation"),
 			"form":  form,
 		}
-		return formTmpl.Execute(w, args)
+		args.Css = "form"
+		return server.FormTmpl.Execute(w, args)
 	})
 }
 

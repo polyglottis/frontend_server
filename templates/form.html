@@ -1,20 +1,40 @@
 {{define "content"}}
-<div class="form">
+<div class="form{{if .Data.form.Class}} {{.Data.form.Class}}{{end}}">
 	<h1>{{.Data.form.Header}}</h1>
 	{{if .Data.form.Error}}
 	<div class="formError">{{.GetText .Data.form.Error}}</div>
 	{{end}}
 	<form method="post">
 	{{range .Data.form.Fields}}
-	<div>{{$.GetText .Property}}{{if .Link}} <a href={{.Link.Href}}>{{.Link.Text}}</a>{{end}}</div>
-	<input type={{.Type}} name={{.Name}} value={{.Value}}>
-	{{if .Error}}<div class="error">{{$.GetText .Error}}</div>{{end}}
-	{{if .Hint}}<div class="hint">{{$.GetText .Hint}}</div>{{end}}
+		<div class="property">{{$.GetText .Property}}{{if .Link}} <a href={{.Link.Href}}>{{.Link.Text}}</a>{{end}}</div>
+		{{if eq .Type "textarea"}}{{template "textarea" $.Nest .}}{{else}}
+			{{if eq .Type "select"}}{{template "select" $.Nest .}}{{else}}{{template "input" $.Nest .}}{{end}}
+			{{if .Error}}<div class="error">{{$.GetText .Error}}</div>{{end}}
+			{{if .Hint}}<div class="hint">{{$.GetText .Hint}}</div>{{end}}
+		{{end}}
 	{{end}}
 	{{if .Data.form.Extra}}
 	<div class="extra">{{.Data.form.Extra}}</div>
 	{{end}}
-	<div><input type="submit" value={{.GetText .Data.form.Submit}}></div>
+	<div class="submit"><input type="submit" value={{.GetText .Data.form.Submit}}></div>
 	</form>
 </div>
+{{end}}
+
+{{define "input"}}
+{{if eq .Data.Name "Slug"}}http://polyglottis.org/extract/{{end}}<input class="formInput {{.Data.Name}}" type={{.Data.Type}} name={{.Data.Name}} value={{.Data.Value}}>
+{{end}}
+
+{{define "select"}}
+<select>
+	{{range .Data.Options}}
+	<option value="{{.Value}}">{{if .Key}}{{$.GetText .Key}}{{else}}{{.Text}}{{end}}</option>
+	{{end}}
+</select>
+{{end}}
+
+{{define "textarea"}}
+{{if .Data.Error}}<div class="error">{{.GetText .Data.Error}}</div>{{end}}
+{{if .Data.Hint}}<div class="hint">{{.GetText .Data.Hint}}</div>{{end}}
+<textarea class="{{.Data.Name}}" name="{{.Data.Name}}">{{.Data.Value}}</textarea>
 {{end}}

@@ -4,8 +4,8 @@ import (
 	goi18n "github.com/nicksnyder/go-i18n/i18n"
 
 	"github.com/polyglottis/platform/config"
+	"github.com/polyglottis/platform/frontend"
 	"github.com/polyglottis/platform/i18n"
-	"github.com/polyglottis/platform/language"
 )
 
 var Supported = []string{
@@ -22,25 +22,27 @@ func init() {
 
 type Localizer interface {
 	GetText(i18n.Key) string
+	Locale() string
 }
 
 type localizer struct {
-	locale language.Code
+	locale string
 	tFunc  goi18n.TranslateFunc
 }
 
-func NewLocalizer(code language.Code) Localizer {
+func NewLocalizer(context *frontend.Context) Localizer {
 	locale := "en-us"
-	if code != "en" {
-		locale = string(code)
-	}
 	T, _ := goi18n.Tfunc(locale)
 	return &localizer{
-		locale: code,
+		locale: locale, // locale MUST be a valid goi18n.Tfunc locale!!!
 		tFunc:  T,
 	}
 }
 
 func (loc *localizer) GetText(key i18n.Key) string {
 	return loc.tFunc(string(key))
+}
+
+func (loc *localizer) Locale() string {
+	return loc.locale
 }

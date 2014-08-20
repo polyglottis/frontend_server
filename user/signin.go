@@ -13,6 +13,7 @@ func (s *UserServer) SignIn(context *frontend.Context) ([]byte, error) {
 		form := &server.Form{
 			Header: "Sign in",
 			Submit: "Sign in",
+			Class:  "compact",
 			Fields: []*server.FormField{{
 				Name:     "User",
 				Type:     server.InputText,
@@ -32,6 +33,7 @@ func (s *UserServer) SignIn(context *frontend.Context) ([]byte, error) {
 			"title": i18n.Key("Sign In"),
 			"form":  form,
 		}
-		return formTmpl.Execute(w, args)
+		args.Css = "form"
+		return server.FormTmpl.Execute(w, args)
 	})
 }

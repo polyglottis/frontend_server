@@ -1,9 +1,12 @@
 package server
 
 import (
+	"github.com/polyglottis/frontend_server/templates"
 	"github.com/polyglottis/platform/frontend"
 	"github.com/polyglottis/platform/i18n"
 )
+
+var FormTmpl = templates.Parse("templates/form")
 
 type Form struct {
 	Header i18n.Key
@@ -11,28 +14,43 @@ type Form struct {
 	Fields []*FormField
 	Extra  i18n.Key
 	Submit i18n.Key
+	Class  string // css class
 }
 
-type FormType string
+type FieldType string
 
 const (
-	InputText     FormType = "input"
-	InputPassword FormType = "password"
+	InputText     FieldType = "input"
+	InputTextArea FieldType = "textarea"
+	InputPassword FieldType = "password"
+	InputSelect   FieldType = "select"
 )
 
 type FormField struct {
-	Name     string
-	Type     FormType
-	Property i18n.Key
-	Value    string
-	Error    i18n.Key
-	Hint     i18n.Key
-	Link     *Link
+	Name          string
+	Type          FieldType
+	Property      i18n.Key
+	Value         string        // optional
+	Error         i18n.Key      // optional
+	Hint          i18n.Key      // optional
+	Link          *Link         // optional
+	InputTemplate FieldType     // optional
+	Options       []*FormOption // mandatory only with InputTemplate==InputSelect
 }
 
 type Link struct {
 	Href string
 	Text i18n.Key
+}
+
+type FormOption struct {
+	Value string
+	Key   i18n.Key // preferred over Text
+	Text  string   // only used if no key provided
+}
+
+var PleaseSelect = &FormOption{
+	Key: i18n.Key("Please select"),
 }
 
 func (f *Form) Apply(c *frontend.Context) {

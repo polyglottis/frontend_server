@@ -13,6 +13,7 @@ func (s *UserServer) ForgotPassword(context *frontend.Context) ([]byte, error) {
 		form := &server.Form{
 			Header: "Password forgotten",
 			Submit: "Submit",
+			Class:  "compact",
 			Fields: []*server.FormField{{
 				Name:     "Email",
 				Type:     server.InputText,
@@ -25,6 +26,7 @@ func (s *UserServer) ForgotPassword(context *frontend.Context) ([]byte, error) {
 			"title": i18n.Key("Forgot your password?"),
 			"form":  form,
 		}
-		return formTmpl.Execute(w, args)
+		args.Css = "form"
+		return server.FormTmpl.Execute(w, args)
 	})
 }

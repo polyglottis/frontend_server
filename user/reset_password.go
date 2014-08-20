@@ -24,7 +24,8 @@ func (s *UserServer) ResetPassword(context *frontend.Context) ([]byte, error) {
 			"title": i18n.Key("Reset Password"),
 			"form":  form,
 		}
-		return formTmpl.Execute(w, args)
+		args.Css = "form"
+		return server.FormTmpl.Execute(w, args)
 	})
 }
 

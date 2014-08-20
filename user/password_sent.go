@@ -17,6 +17,7 @@ func (s *UserServer) PasswordSent(context *frontend.Context) ([]byte, error) {
 			"title": i18n.Key("Password Sent"),
 			"email": context.Email,
 		}
+		args.Css = "message"
 		return passwordSentTmpl.Execute(w, args)
 	})
 }

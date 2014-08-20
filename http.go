@@ -22,12 +22,24 @@ func (s *Server) Home(context *frontend.Context) ([]byte, error) {
 	})
 }
 
+var errTmpl = templates.Parse("templates/error")
+
+func (s *Server) Error(context *frontend.Context) ([]byte, error) {
+	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
+		args.Data = map[string]interface{}{
+			"title": i18n.Key("Error"),
+			"error": i18n.Key("Internal server error."),
+		}
+		return errTmpl.Execute(w, args)
+	})
+}
+
 func (s *Server) NotFound(context *frontend.Context) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
 		args.Data = map[string]interface{}{
 			"error": i18n.Key("Page not found."),
 			"title": i18n.Key("Not Found"),
 		}
-		return server.ErrTmpl.Execute(w, args)
+		return errTmpl.Execute(w, args)
 	})
 }
