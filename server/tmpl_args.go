@@ -102,13 +102,15 @@ func (a *TmplArgs) LinkEdit(which, what string) string {
 }
 
 type nestedArgs struct {
-	Data interface{}
+	Data    interface{}
+	Context *frontend.Context
 	localizer.Localizer
 }
 
 func (a *TmplArgs) Nest(data interface{}) *nestedArgs {
 	return &nestedArgs{
 		Data:      data,
+		Context:   a.Context,
 		Localizer: a.Localizer,
 	}
 }
@@ -116,6 +118,7 @@ func (a *TmplArgs) Nest(data interface{}) *nestedArgs {
 func (a *nestedArgs) Nest(data interface{}) *nestedArgs {
 	return &nestedArgs{
 		Data:      data,
+		Context:   a.Context,
 		Localizer: a.Localizer,
 	}
 }

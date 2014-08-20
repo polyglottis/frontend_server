@@ -26,15 +26,16 @@
 {{end}}
 
 {{define "select"}}
-<select>
+{{$x := .Context.Defaults.Get .Data.Name}}
+<select name="{{.Data.Name}}">
 	{{range .Data.Options}}
-	<option value="{{.Value}}">{{if .Key}}{{$.GetText .Key}}{{else}}{{.Text}}{{end}}</option>
+	<option value="{{.Value}}"{{if eq $x .Value}} selected="selected"{{end}}>{{if .Key}}{{$.GetText .Key}}{{else}}{{.Text}}{{end}}</option>
 	{{end}}
 </select>
 {{end}}
 
 {{define "textarea"}}
-{{if .Data.Error}}<div class="error">{{.GetText .Data.Error}}</div>{{end}}
 {{if .Data.Hint}}<div class="hint">{{.GetText .Data.Hint}}</div>{{end}}
+{{if .Data.Error}}<div class="error">{{.GetText .Data.Error}}</div>{{end}}
 <textarea class="{{.Data.Name}}" name="{{.Data.Name}}">{{.Data.Value}}</textarea>
 {{end}}
