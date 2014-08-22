@@ -10,6 +10,7 @@ import (
 
 	goi18n "github.com/nicksnyder/go-i18n/i18n"
 
+	"github.com/polyglottis/platform/i18n"
 	"github.com/polyglottis/platform/language"
 )
 
@@ -68,6 +69,10 @@ func getLanguageList() ([]language.Code, error) {
 
 func (args *TmplArgs) GetLanguageOptions() ([]*FormOption, error) {
 	return getSortedLanguageOptions(args.Localizer.Locale())
+}
+
+func (args *TmplArgs) GetLanguage(code language.Code) string {
+	return args.GetText(i18n.Key("lang_" + code))
 }
 
 func getSortedLanguageOptions(locale string) ([]*FormOption, error) {

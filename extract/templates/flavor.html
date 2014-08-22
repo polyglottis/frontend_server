@@ -1,4 +1,55 @@
 {{define "frame-content"}}
+<div>
+<table class="language-select"><tbody ng-app ng-controller="LanguageCtrl">
+	<tr>
+		<td>{{.GetText "A-side"}}</td><td>{{.GetText "B-side"}}</td>
+	</tr>
+	<tr>
+		<td>
+			{{.GetText "Language:"}}
+			<select ng-model="languageA"
+							ng-change="changeA(languageA)"
+							ng-options="lang.Label for lang in languages track by lang.Code">
+			</select>
+		</td><td>
+			{{.GetText "Language:"}}
+			<select ng-model="languageB"
+							ng-change="changeB(languageB)"
+							ng-options="lang.Label for lang in languages track by lang.Code">
+					<option value="">-- {{.GetText "Nothing"}} --</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			{{.GetText "Text version:"}}
+			<select ng-model="textA"
+							ng-options="text.Comment for text in languageA.Text">
+			</select>
+		</td>
+		<td>
+		<div ng-if="languageB">
+			{{.GetText "Text version:"}}
+			<select ng-model="textB"
+							ng-options="text.Comment for text in languageB.Text">
+			</select>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			{{.GetText "Summary:"}}
+			{{"{{textA.Summary}}"}}
+		</td>
+		<td>
+		<div ng-if="languageB">
+			{{.GetText "Summary:"}}
+			{{"{{textB.Summary}}"}}
+			</div>
+		</td>
+	</tr>
+</tbody></table>
+</div>
 	<div class="extractContent" id="extractContent">
   <h1> {{template "string" .Nest .Data.flavorA.Title}} </h1>
 	<div id="body">

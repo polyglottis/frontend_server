@@ -3,13 +3,10 @@ package server
 
 import (
 	"fmt"
-	"log"
-	"net/url"
 
 	localizer "github.com/polyglottis/frontend_server/i18n"
 	"github.com/polyglottis/platform/frontend"
 	"github.com/polyglottis/platform/i18n"
-	"github.com/polyglottis/platform/language"
 )
 
 func GetTmplArgs(context *frontend.Context) (*TmplArgs, error) {
@@ -24,6 +21,7 @@ func GetTmplArgs(context *frontend.Context) (*TmplArgs, error) {
 type TmplArgs struct {
 	Data    map[string]interface{}
 	Css     string // "extract" (default), "form", or other .scss file
+	Angular bool   // angular script
 	Context *frontend.Context
 	localizer.Localizer
 }
@@ -61,44 +59,12 @@ func (a *TmplArgs) UserName() string {
 	return string(a.Context.User)
 }
 
-func (a *TmplArgs) LanguageA() string {
-	return a.languageString(a.Context.LanguageA)
-}
-
-func (a *TmplArgs) LanguageB() string {
-	return a.languageString(a.Context.LanguageB)
-}
-
-func (a *TmplArgs) languageString(code language.Code) string {
-	return a.GetText(i18n.Key("lang_" + string(code)))
-}
-
 func (a *TmplArgs) title(t string, addBrand bool) string {
 	if addBrand {
 		return t + " - Polyglottis"
 	} else {
 		return t
 	}
-}
-
-func (a *TmplArgs) LinkEdit(which, what string) string {
-	query := url.Values{}
-	if len(a.Context.ExtractId) == 0 {
-		log.Println("Unable to generate edit link when extrat id is not set.")
-		return ""
-	}
-	query.Set("id", string(a.Context.ExtractId))
-	query.Set("a", string(a.Context.LanguageA))
-	if len(a.Context.LanguageB) != 0 {
-		query.Set("b", string(a.Context.LanguageB))
-	}
-	switch which {
-	case "a", "b":
-		query.Set("focus", which)
-	default:
-		log.Println("Argument \"which\" should be either \"a\" or \"b\"")
-	}
-	return fmt.Sprintf("/extract/edit/%s?%s", what, query.Encode())
 }
 
 type nestedArgs struct {

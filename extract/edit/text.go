@@ -3,6 +3,7 @@ package edit
 import (
 	"io"
 
+	"github.com/polyglottis/frontend_server/extract"
 	"github.com/polyglottis/frontend_server/server"
 	"github.com/polyglottis/frontend_server/templates"
 	"github.com/polyglottis/platform/content"
@@ -12,13 +13,13 @@ import (
 
 type EditServer struct{}
 
-var editTextTmpl = templates.Parse("extract/templates/frame", "extract/edit/templates/text")
+var editTextTmpl = templates.Parse("extract/templates/frame.html", "extract/edit/templates/text.html")
 
-func (s *EditServer) EditText(context *frontend.Context, extract *content.Extract, a, b *content.Flavor) ([]byte, error) {
+func (s *EditServer) EditText(context *frontend.Context, e *content.Extract, a, b *content.Flavor) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, serverArgs *server.TmplArgs) error {
 		args := &TmplArgs{
-			TmplArgs:     serverArgs,
-			ExtractShape: extract.Shape(),
+			TmplArgs:     extract.NewTmplArgs(serverArgs, e, a, b),
+			ExtractShape: e.Shape(),
 		}
 		if context.Query.Get("focus") != "b" {
 			context.Query.Set("focus", "a")
@@ -34,7 +35,7 @@ func (s *EditServer) EditText(context *frontend.Context, extract *content.Extrac
 }
 
 type TmplArgs struct {
-	*server.TmplArgs
+	*extract.TmplArgs
 	ExtractShape content.ExtractShape
 	Focus        *content.Flavor
 	NoFocus      *content.Flavor

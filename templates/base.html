@@ -3,6 +3,10 @@
   <head>
     <title>{{.Title}}</title>
     <link href="/static/css/{{.Css}}.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    {{if .Angular}}
+    <script src='/static/js/angular.min.js'></script>
+    <script>{{template "angular-script" .}}</script>
+    {{end}}
   </head>
   <body>
     <div class="banner">

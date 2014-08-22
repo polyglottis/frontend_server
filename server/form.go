@@ -6,7 +6,7 @@ import (
 	"github.com/polyglottis/platform/i18n"
 )
 
-var FormTmpl = templates.Parse("templates/form")
+var FormTmpl = templates.Parse("templates/form.html")
 
 type Form struct {
 	Header i18n.Key

@@ -56,7 +56,7 @@ func (s *EditServer) NewExtract(context *frontend.Context) ([]byte, error) {
 				Name:     "Text",
 				Type:     server.InputTextArea,
 				Property: "Text",
-				Hint:     "Put a line break after each sentence. Split paragraphs by leaving a blank line.",
+				Hint:     "IMPORTANT: Enter a line break after EACH sentence. Split paragraphs by leaving a blank line.",
 			}},
 		}
 		form.Apply(context)

@@ -1,7 +1,10 @@
 package extract
 
 import (
+	"fmt"
 	"io"
+	"log"
+	"net/url"
 
 	"github.com/polyglottis/frontend_server/server"
 	"github.com/polyglottis/frontend_server/templates"
@@ -13,25 +16,94 @@ import (
 
 type ExtractServer struct{}
 
-var flavorTmpl = templates.Parse("extract/templates/frame", "extract/templates/flavor")
+// var languageSelectScript = templates.Script("extract/templates/language_select")
+var flavorTmpl = templates.Parse("extract/templates/frame.html", "extract/templates/flavor.html", "extract/templates/language_select.js")
 
-func (s *ExtractServer) Extract(context *frontend.Context, extract *content.Extract) ([]byte, error) {
-	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
-		args.Data = map[string]interface{}{
-			"title": "home_page",
-		}
-		return flavorTmpl.Execute(w, args)
-	})
+type TmplArgs struct {
+	*server.TmplArgs
+	languageA language.Code
+	languageB language.Code
+	ExtractId content.ExtractId
+	Slug      string
+}
+
+func (a *TmplArgs) LanguageA() string {
+	return a.languageString(a.languageA)
+}
+
+func (a *TmplArgs) LanguageB() string {
+	return a.languageString(a.languageB)
+}
+
+func (a *TmplArgs) languageString(code language.Code) string {
+	return a.GetText(i18n.Key("lang_" + string(code)))
+}
+
+func (a *TmplArgs) LinkEdit(which, what string) string {
+	query := url.Values{}
+	if len(a.ExtractId) == 0 {
+		log.Println("Unable to generate edit link when extrat id is not set.")
+		return ""
+	}
+	query.Set("id", string(a.ExtractId))
+	query.Set("a", string(a.languageA))
+	if len(a.languageB) != 0 {
+		query.Set("b", string(a.languageB))
+	}
+	switch which {
+	case "a", "b":
+		query.Set("focus", which)
+	default:
+		log.Println("Argument \"which\" should be either \"a\" or \"b\"")
+	}
+	return fmt.Sprintf("/extract/edit/%s?%s", what, query.Encode())
+}
+
+func (a *TmplArgs) LinkRead() string {
+	return fmt.Sprintf("/extract/%s/%s", a.Slug, string(a.languageA))
+}
+
+func newTmplArgsExtract(tmplArgs *server.TmplArgs, e *content.Extract) *TmplArgs {
+	args := &TmplArgs{TmplArgs: tmplArgs}
+	if e != nil {
+		args.ExtractId = e.Id
+		args.Slug = e.UrlSlug
+	}
+	return args
+}
+
+func newTmplArgsTriples(tmplArgs *server.TmplArgs, e *content.Extract, a, b *frontend.FlavorTriple) *TmplArgs {
+	args := newTmplArgsExtract(tmplArgs, e)
+	if a != nil {
+		args.languageA = a.Language()
+	}
+	if b != nil {
+		args.languageB = b.Language()
+	}
+	return args
+}
+
+func NewTmplArgs(tmplArgs *server.TmplArgs, e *content.Extract, a, b *content.Flavor) *TmplArgs {
+	args := newTmplArgsExtract(tmplArgs, e)
+	if a != nil {
+		args.languageA = a.Language
+	}
+	if b != nil {
+		args.languageB = b.Language
+	}
+	return args
 }
 
 func (s *ExtractServer) Flavor(context *frontend.Context, extract *content.Extract, a, b *frontend.FlavorTriple) ([]byte, error) {
-	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
-		f := extractFlavor(extract.Shape(), a.Text)
+	return server.Call(context, func(w io.Writer, tmplArgs *server.TmplArgs) error {
+		args := newTmplArgsTriples(tmplArgs, extract, a, b)
+		f := shapeFlavor(extract.Shape(), a.Text)
+		args.Angular = true
 		args.Data = map[string]interface{}{
-			"title":     getTitle(f),
-			"flavorA":   f,
-			"languageA": context.LanguageA,
+			"title":   getTitle(f),
+			"flavorA": f,
 		}
+		args.Data["LanguageOptions"], args.Data["Selection"] = args.languageOptions(extract)
 		return flavorTmpl.Execute(w, args)
 	})
 }
@@ -68,7 +140,7 @@ type String struct {
 	Missing bool
 }
 
-func extractFlavor(shape content.ExtractShape, flavor *content.Flavor) *Flavor {
+func shapeFlavor(shape content.ExtractShape, flavor *content.Flavor) *Flavor {
 	f := &Flavor{
 		Id:       flavor.Id,
 		Summary:  flavor.Summary,
@@ -93,4 +165,58 @@ func extractFlavor(shape content.ExtractShape, flavor *content.Flavor) *Flavor {
 		f.Blocks[len(f.Blocks)-1].Units = append(f.Blocks[len(f.Blocks)-1].Units, unit)
 	}, nil)
 	return f
+}
+
+type languageOption struct {
+	Code  language.Code
+	Label string
+	Text  []*versionOption
+}
+type versionOption struct {
+	Id      content.FlavorId
+	Comment string
+	Summary string
+}
+type selection struct {
+	LanguageA int
+	LanguageB int
+	TextA     int
+	TextB     int
+}
+
+func newSelection() *selection {
+	return &selection{LanguageA: -1, LanguageB: -1}
+}
+
+func (args *TmplArgs) languageOptions(e *content.Extract) ([]*languageOption, *selection) {
+	options := make([]*languageOption, 0, len(e.Flavors))
+	selected := newSelection()
+	for langCode, fByType := range e.Flavors {
+		if flavors, ok := fByType[content.Text]; ok {
+			if args.languageA == langCode {
+				selected.LanguageA = len(options)
+			}
+			if args.languageB == langCode {
+				selected.LanguageB = len(options)
+			}
+			options = append(options, &languageOption{
+				Code:  langCode,
+				Label: args.GetLanguage(langCode),
+				Text:  args.versionOptions(flavors),
+			})
+		}
+	}
+	return options, selected
+}
+
+func (args *TmplArgs) versionOptions(flavors []*content.Flavor) []*versionOption {
+	options := make([]*versionOption, len(flavors))
+	for i, f := range flavors {
+		options[i] = &versionOption{
+			Id:      f.Id,
+			Comment: f.LanguageComment,
+			Summary: f.Summary,
+		}
+	}
+	return options
 }

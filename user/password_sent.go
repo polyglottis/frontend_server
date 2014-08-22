@@ -9,7 +9,7 @@ import (
 	"github.com/polyglottis/platform/i18n"
 )
 
-var passwordSentTmpl = templates.Parse("user/templates/password_sent")
+var passwordSentTmpl = templates.Parse("user/templates/password_sent.html")
 
 func (s *UserServer) PasswordSent(context *frontend.Context) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, args *server.TmplArgs) error {
