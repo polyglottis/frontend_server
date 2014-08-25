@@ -8,5 +8,7 @@ function Ctrl($scope) {
 		}
 	}
 	$scope.flavors = {{.Data.Flavors}};
+	$scope.MainComment = {{.Data.defaults.Get "MainComment"}}
+	$scope.OtherComment = {{.Data.defaults.Get "OtherComment"}}
 }
 {{end}}

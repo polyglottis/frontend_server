@@ -61,30 +61,29 @@
 <input type="submit" value="{{.GetText "Display selection"}}">
 </form>
 </div>
-	<div class="extractContent" id="extractContent">
-  <h1> {{template "string" .Nest .Data.flavorA.Title}} </h1>
-	<div id="body">
-  {{range .Data.flavorA.Blocks}}
+	{{if .Data.flavors}}<div class="extractContent" id="extractContent">
+  <h1> {{template "string" .Nest .Data.flavors.Title}} </h1>
+  <div id="body">
+  {{range .Data.flavors.Blocks}}
   {{template "block" $.Nest .}}
   {{end}}
 		</div>
-		<hr/>
-  <p> {{.Data.flavorA.Summary}} </p>
-	</div>
+	</div>{{end}}
 {{end}}
 
 {{define "string"}}
-{{if .Data.Missing}}
-<div class="missing">{{.GetText "missing content"}}</div>
-{{else}}
-<div>{{.Data.Content}}</div>
-{{end}}
+	{{if .HasA}}{{if .Data.MissingA}}
+	<div class="missing">{{.GetText "missing content"}}</div>
+	{{else}}
+	<div>{{.Data.ContentA}}</div>
+	{{end}}{{end}}
+	{{if .HasB}}{{if .Data.MissingB}}
+	<div class="missing">{{.GetText "missing content"}}</div>
+	{{else}}
+	<div>{{.Data.ContentB}}</div>
+	{{end}}{{end}}
 {{end}}
 
 {{define "block"}}
-{{if .Data.Missing}}
-<p class="missing">{{.GetText "missing content"}}</p>
-{{else}}
 <p>{{range .Data.Units}}{{template "string" $.Nest .}}{{end}}</p>
-{{end}}
 {{end}}

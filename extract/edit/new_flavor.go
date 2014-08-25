@@ -38,6 +38,7 @@ func (s *EditServer) NewFlavor(context *frontend.Context, e *content.Extract) ([
 			"LanguageOptions": languageOptions[1:],
 			"Flavors":         e.Flavors,
 			"errors":          context.Errors,
+			"defaults":        context.Defaults,
 		}
 		args.Css = "form"
 		return newFlavorTmpl.Execute(w, args)

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/url"
 
+	localizer "github.com/polyglottis/frontend_server/i18n"
 	"github.com/polyglottis/frontend_server/server"
 	"github.com/polyglottis/frontend_server/templates"
 	"github.com/polyglottis/platform/content"
@@ -96,11 +97,21 @@ func NewTmplArgs(tmplArgs *server.TmplArgs, e *content.Extract, a, b *content.Fl
 func (s *ExtractServer) Flavor(context *frontend.Context, extract *content.Extract, a, b *frontend.FlavorTriple) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, tmplArgs *server.TmplArgs) error {
 		args := newTmplArgsTriples(tmplArgs, extract, a, b)
-		f := shapeFlavor(extract.Shape(), a.Text)
+		shape := extract.Shape()
+		var flavorA, flavorB *content.Flavor
+		if a != nil {
+			flavorA = a.Text
+		}
+		if b != nil {
+			flavorB = b.Text
+		}
+		flavors := shapeFlavors(shape, flavorA, flavorB)
 		args.Angular = true
 		args.Data = map[string]interface{}{
-			"title":   getTitle(f),
-			"flavorA": f,
+			"title":   getTitle(flavors),
+			"flavors": flavors,
+			"HasA":    a != nil,
+			"HasB":    b != nil,
 		}
 		args.Data["LanguageOptions"], args.Data["Selection"] = args.languageOptions(extract)
 		return flavorTmpl.Execute(w, args)
@@ -108,58 +119,78 @@ func (s *ExtractServer) Flavor(context *frontend.Context, extract *content.Extra
 }
 
 func getTitle(f *Flavor) interface{} {
-	if f.Title.Missing {
+	if f == nil {
+		return i18n.Key("home_page")
+	}
+	if f.Title.MissingA {
 		return i18n.Key("No title")
 	} else {
-		return f.Title.Content
+		return f.Title.ContentA
 	}
 }
 
 type Flavor struct {
-	Id       content.FlavorId
-	Summary  string
-	Title    String
-	Language language.Code
-	Blocks   []*Block
+	IdA, IdB             content.FlavorId
+	Title                StringPair
+	LanguageA, LanguageB language.Code
+	Blocks               []*Block
 }
 
 type Block struct {
-	Id      content.BlockId
-	Units   []*Unit
-	Missing bool
+	Id    content.BlockId
+	Units []*Unit
 }
 
 type Unit struct {
 	Id content.UnitId
-	String
+	StringPair
 }
 
-type String struct {
-	Content string
-	Missing bool
+type StringPair struct {
+	ContentA, ContentB string
+	MissingA, MissingB bool
 }
 
-func shapeFlavor(shape content.ExtractShape, flavor *content.Flavor) *Flavor {
-	f := &Flavor{
-		Id:       flavor.Id,
-		Summary:  flavor.Summary,
-		Title:    String{Missing: true},
-		Language: flavor.Language,
+func shapeFlavors(shape content.ExtractShape, flavorA, flavorB *content.Flavor) *Flavor {
+	if flavorA == nil && flavorB == nil {
+		return nil
 	}
-	if len(flavor.Blocks) != 0 {
-		u := flavor.Blocks[0][0]
+	f := &Flavor{Title: StringPair{MissingA: true, MissingB: true}}
+	if flavorA != nil {
+		f.IdA = flavorA.Id
+		f.LanguageA = flavorA.Language
+	}
+	if flavorB != nil {
+		f.IdB = flavorB.Id
+		f.LanguageB = flavorB.Language
+	}
+	if len(flavorA.Blocks) != 0 {
+		u := flavorA.Blocks[0][0]
 		if u.BlockId == 1 && u.Id == 1 {
-			f.Title = String{Content: u.Content}
+			f.Title.ContentA = u.Content
+			f.Title.MissingA = false
 		}
 	}
-	shape.IterateFlavorBody(flavor, func(blockId content.BlockId) {
+	if len(flavorB.Blocks) != 0 {
+		u := flavorB.Blocks[0][0]
+		if u.BlockId == 1 && u.Id == 1 {
+			f.Title.ContentB = u.Content
+			f.Title.MissingB = false
+		}
+	}
+	shape.IterateFlavorBodies(flavorA, flavorB, func(blockId content.BlockId) {
 		f.Blocks = append(f.Blocks, &Block{Id: blockId})
-	}, func(blockId content.BlockId, unitId content.UnitId, u *content.Unit) {
+	}, func(blockId content.BlockId, unitId content.UnitId, uA, uB *content.Unit) {
 		unit := &Unit{Id: unitId}
-		if u == nil {
-			unit.Missing = true
+		if uA == nil {
+			unit.MissingA = true
 		} else {
-			unit.Content = u.Content
+			unit.ContentA = uA.Content
+		}
+		if uB == nil {
+			unit.MissingB = true
+		} else {
+			unit.ContentB = uB.Content
 		}
 		f.Blocks[len(f.Blocks)-1].Units = append(f.Blocks[len(f.Blocks)-1].Units, unit)
 	}, nil)
@@ -218,4 +249,31 @@ func (args *TmplArgs) versionOptions(flavors []*content.Flavor) []*versionOption
 		}
 	}
 	return options
+}
+
+type nestedArgs struct {
+	Data    interface{}
+	Context *frontend.Context
+	localizer.Localizer
+	HasA, HasB bool
+}
+
+func (a *TmplArgs) Nest(data interface{}) *nestedArgs {
+	return &nestedArgs{
+		Data:      data,
+		Context:   a.Context,
+		Localizer: a.Localizer,
+		HasA:      a.Data["HasA"].(bool),
+		HasB:      a.Data["HasB"].(bool),
+	}
+}
+
+func (a *nestedArgs) Nest(data interface{}) *nestedArgs {
+	return &nestedArgs{
+		Data:      data,
+		Context:   a.Context,
+		Localizer: a.Localizer,
+		HasA:      a.HasA,
+		HasB:      a.HasB,
+	}
 }
