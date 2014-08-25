@@ -1,6 +1,7 @@
 {{define "frame-content"}}
 <div>
-<table class="language-select"><tbody ng-app ng-controller="LanguageCtrl">
+<form ng-app ng-controller="LanguageCtrl" ng-submit="submit()">
+<table class="language-select"><tbody>
 	<tr>
 		<td>{{.GetText "A-side"}}</td><td>{{.GetText "B-side"}}</td>
 	</tr>
@@ -22,17 +23,25 @@
 	</tr>
 	<tr>
 		<td>
-			{{.GetText "Text version:"}}
-			<select ng-model="textA"
-							ng-options="text.Comment for text in languageA.Text">
-			</select>
+			<div ng-if="languageA.Text.length > 1">
+				{{.GetText "Text version:"}}
+				<select ng-model="textA"
+								ng-options="text.Comment for text in languageA.Text">
+				</select>
+			</div>
+			<div ng-if="languageA.Text.length == 1">
+				{{.GetText "There is only one version in this language."}}
+			</div>
 		</td>
 		<td>
-		<div ng-if="languageB">
-			{{.GetText "Text version:"}}
-			<select ng-model="textB"
-							ng-options="text.Comment for text in languageB.Text">
-			</select>
+			<div ng-if="languageB && (languageB.Text.length > 1)">
+				{{.GetText "Text version:"}}
+				<select ng-model="textB"
+								ng-options="text.Comment for text in languageB.Text">
+				</select>
+			</div>
+			<div ng-if="languageB && (languageB.Text.length == 1)">
+				{{.GetText "There is only one version in this language."}}
 			</div>
 		</td>
 	</tr>
@@ -49,6 +58,8 @@
 		</td>
 	</tr>
 </tbody></table>
+<input type="submit" value="{{.GetText "Display selection"}}">
+</form>
 </div>
 	<div class="extractContent" id="extractContent">
   <h1> {{template "string" .Nest .Data.flavorA.Title}} </h1>
