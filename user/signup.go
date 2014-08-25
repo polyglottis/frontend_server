@@ -26,7 +26,7 @@ func (s *UserServer) SignUp(context *frontend.Context) ([]byte, error) {
 				Type:     server.InputText,
 				Property: "Email Address",
 				Hint:     "You will receive emails when they are big news to Polyglottis. We promise not to share your email with anyone.",
-			}, passwordField, passwordConfirmField},
+			}, passwordField(), passwordConfirmField()},
 		}
 		form.Apply(context)
 		args.Data = map[string]interface{}{
@@ -38,15 +38,19 @@ func (s *UserServer) SignUp(context *frontend.Context) ([]byte, error) {
 	})
 }
 
-var passwordField = &server.FormField{
-	Name:     "Password",
-	Type:     server.InputPassword,
-	Property: "Password",
-	Hint:     "Use at least eight characters.",
+func passwordField() *server.FormField {
+	return &server.FormField{
+		Name:     "Password",
+		Type:     server.InputPassword,
+		Property: "Password",
+		Hint:     "Use at least eight characters.",
+	}
 }
 
-var passwordConfirmField = &server.FormField{
-	Name:     "PasswordConfirm",
-	Type:     server.InputPassword,
-	Property: "Confirm your password",
+func passwordConfirmField() *server.FormField {
+	return &server.FormField{
+		Name:     "PasswordConfirm",
+		Type:     server.InputPassword,
+		Property: "Confirm your password",
+	}
 }

@@ -17,7 +17,7 @@ func (s *UserServer) ResetPassword(context *frontend.Context) ([]byte, error) {
 		form := &server.Form{
 			Header: "Change your password",
 			Submit: "Change password",
-			Fields: []*server.FormField{passwordField, passwordConfirmField},
+			Fields: []*server.FormField{passwordField(), passwordConfirmField()},
 		}
 		form.Apply(context)
 		args.Data = map[string]interface{}{
