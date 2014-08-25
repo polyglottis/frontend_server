@@ -4,8 +4,12 @@
     <title>{{.Title}}</title>
     <link href="/static/css/{{.Css}}.css" media="screen, projection" rel="stylesheet" type="text/css" />
     {{if .Angular}}
-    <script src='/static/js/angular.min.js'></script>
-    <script>{{template "angular-script" .}}</script>
+			{{if .AngularLocal}}
+				<script src='/static/js/angularjs/{{.AngularVersion}}/angular.min.js'></script>
+			{{else}}
+				<script src="//ajax.googleapis.com/ajax/libs/angularjs/{{.AngularVersion}}/angular.min.js"></script>
+			{{end}}
+			<script>{{template "angular-script" .}}</script>
     {{end}}
   </head>
   <body>

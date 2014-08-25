@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	localizer "github.com/polyglottis/frontend_server/i18n"
+	"github.com/polyglottis/platform/config"
 	"github.com/polyglottis/platform/frontend"
 	"github.com/polyglottis/platform/i18n"
 )
@@ -12,19 +13,23 @@ import (
 func GetTmplArgs(context *frontend.Context) (*TmplArgs, error) {
 	localizer := localizer.NewLocalizer(context)
 	return &TmplArgs{
-		Context:   context,
-		Css:       "extract",
-		Localizer: localizer,
+		Context:      context,
+		Css:          "extract",
+		Localizer:    localizer,
+		AngularLocal: config.Get().AngularLocal,
 	}, nil
 }
 
 type TmplArgs struct {
-	Data    map[string]interface{}
-	Css     string // "extract" (default), "form", or other .scss file
-	Angular bool   // angular script
-	Context *frontend.Context
+	Data         map[string]interface{}
+	Css          string // "extract" (default), "form", or other .scss file
+	Angular      bool   // angular script
+	AngularLocal bool   // angular local instead of CDN
+	Context      *frontend.Context
 	localizer.Localizer
 }
+
+func (a *TmplArgs) AngularVersion() string { return "1.2.23" }
 
 func (a *TmplArgs) GetKey(k string) (i18n.Key, error) {
 	if a.Data[k] == nil {
