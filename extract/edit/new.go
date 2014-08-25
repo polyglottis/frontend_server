@@ -17,8 +17,9 @@ func (s *EditServer) NewExtract(context *frontend.Context) ([]byte, error) {
 		}
 
 		form := &server.Form{
-			Header: "Create a new extract",
-			Submit: "Save new extract",
+			MustLogIn: true,
+			Header:    "Create a new extract",
+			Submit:    "Save new extract",
 			Fields: []*server.FormField{{
 				Name:     "Slug",
 				Type:     server.InputText,

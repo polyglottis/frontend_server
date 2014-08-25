@@ -1,5 +1,5 @@
 {{define "content"}}
 <div class="errorPage">
-	<h1> {{.GetKey "error" | .GetText}} </h1>
+	<h1> {{.GetText .Data.error}} </h1>
 </div>
 {{end}}

@@ -45,9 +45,8 @@ func (a *TmplArgs) LinkEdit(which, what string) string {
 		log.Println("Unable to generate edit link when extrat id is not set.")
 		return ""
 	}
-	query.Set("id", string(a.ExtractId))
 	query.Set("a", string(a.languageA))
-	if len(a.languageB) != 0 {
+	if len(a.languageB) != 0 && a.languageB != language.Unknown.Code {
 		query.Set("b", string(a.languageB))
 	}
 	switch which {
@@ -56,14 +55,14 @@ func (a *TmplArgs) LinkEdit(which, what string) string {
 	default:
 		log.Println("Argument \"which\" should be either \"a\" or \"b\"")
 	}
-	return fmt.Sprintf("/extract/edit/%s?%s", what, query.Encode())
+	return fmt.Sprintf("/extract/edit/%s/%s?%s", what, a.Slug, query.Encode())
 }
 
 func (a *TmplArgs) LinkRead() string {
 	return fmt.Sprintf("/extract/%s/%s", a.Slug, string(a.languageA))
 }
 
-func newTmplArgsExtract(tmplArgs *server.TmplArgs, e *content.Extract) *TmplArgs {
+func NewTmplArgsExtract(tmplArgs *server.TmplArgs, e *content.Extract) *TmplArgs {
 	args := &TmplArgs{TmplArgs: tmplArgs}
 	if e != nil {
 		args.ExtractId = e.Id
@@ -73,7 +72,7 @@ func newTmplArgsExtract(tmplArgs *server.TmplArgs, e *content.Extract) *TmplArgs
 }
 
 func newTmplArgsTriples(tmplArgs *server.TmplArgs, e *content.Extract, a, b *frontend.FlavorTriple) *TmplArgs {
-	args := newTmplArgsExtract(tmplArgs, e)
+	args := NewTmplArgsExtract(tmplArgs, e)
 	if a != nil {
 		args.languageA = a.Language()
 	}
@@ -84,7 +83,7 @@ func newTmplArgsTriples(tmplArgs *server.TmplArgs, e *content.Extract, a, b *fro
 }
 
 func NewTmplArgs(tmplArgs *server.TmplArgs, e *content.Extract, a, b *content.Flavor) *TmplArgs {
-	args := newTmplArgsExtract(tmplArgs, e)
+	args := NewTmplArgsExtract(tmplArgs, e)
 	if a != nil {
 		args.languageA = a.Language
 	}

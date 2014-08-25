@@ -21,7 +21,7 @@ func init() {
 }
 
 type Localizer interface {
-	GetText(i18n.Key) string
+	GetText(key i18n.Key, optionalArgument ...interface{}) string
 	Locale() string
 }
 
@@ -39,7 +39,16 @@ func NewLocalizer(context *frontend.Context) Localizer {
 	}
 }
 
-func (loc *localizer) GetText(key i18n.Key) string {
+func (loc *localizer) GetText(key i18n.Key, arg ...interface{}) string {
+	if len(arg) != 0 {
+		if intArg, ok := arg[0].(int); ok {
+			return loc.tFunc(string(key), intArg)
+		} else if strArg, ok := arg[0].(string); ok {
+			return loc.tFunc(string(key), map[string]interface{}{"value": strArg})
+		} else if keyArg, ok := arg[0].(i18n.Key); ok {
+			return loc.tFunc(string(key), map[string]interface{}{"value": loc.tFunc(string(keyArg))})
+		}
+	}
 	return loc.tFunc(string(key))
 }
 

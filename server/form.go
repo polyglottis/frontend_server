@@ -9,12 +9,13 @@ import (
 var FormTmpl = templates.Parse("templates/form.html")
 
 type Form struct {
-	Header i18n.Key
-	Error  i18n.Key
-	Fields []*FormField
-	Extra  i18n.Key
-	Submit i18n.Key
-	Class  string // css class
+	Header    i18n.Key
+	Error     i18n.Key
+	Fields    []*FormField
+	Extra     i18n.Key
+	Submit    i18n.Key
+	Class     string // css class
+	MustLogIn bool
 }
 
 type FieldType string
@@ -45,8 +46,8 @@ type Link struct {
 
 type FormOption struct {
 	Value string
-	Key   i18n.Key // preferred over Text
-	Text  string   // only used if no key provided
+	Key   i18n.Key `json:",omitempty"` // preferred over Text
+	Text  string   `json:",omitempty"` // only used if no key provided
 }
 
 var PleaseSelect = &FormOption{
@@ -56,6 +57,8 @@ var PleaseSelect = &FormOption{
 func (f *Form) Apply(c *frontend.Context) {
 	if err, ok := c.Errors["FORM"]; ok {
 		f.Error = err
+	} else if f.MustLogIn && !c.LoggedIn() {
+		f.Error = i18n.Key("You must sign in to create or edit content. Please sign in or create an account. Otherwise your changes will not be recorded.")
 	}
 	for _, field := range f.Fields {
 		field.Value = c.Defaults.Get(field.Name)

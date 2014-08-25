@@ -31,17 +31,6 @@ type TmplArgs struct {
 
 func (a *TmplArgs) AngularVersion() string { return "1.2.23" }
 
-func (a *TmplArgs) GetKey(k string) (i18n.Key, error) {
-	if a.Data[k] == nil {
-		return "", fmt.Errorf("Expecting i18n.Key in args.Data[\"%s\"] but found nil.", k)
-	}
-	if key, ok := a.Data[k].(i18n.Key); ok {
-		return key, nil
-	} else {
-		return "", fmt.Errorf("args.Data[\"%s\"] should be of type i18n.Key")
-	}
-}
-
 func (a *TmplArgs) Title() (string, error) {
 	if title, ok := a.Data["title"].(string); ok {
 		if title == "home_page" {
@@ -57,7 +46,7 @@ func (a *TmplArgs) Title() (string, error) {
 }
 
 func (a *TmplArgs) LoggedIn() bool {
-	return len(a.Context.User) != 0
+	return a.Context.LoggedIn()
 }
 
 func (a *TmplArgs) UserName() string {

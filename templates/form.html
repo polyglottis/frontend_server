@@ -4,7 +4,7 @@
 	{{if .Data.form.Error}}
 	<div class="formError">{{.GetText .Data.form.Error}}</div>
 	{{end}}
-	<form method="post">
+	<form method="post"{{if .Angular}} ng-app ng-controller="Ctrl" action="{{.Slug}}" method="POST"{{end}}>
 	{{range .Data.form.Fields}}
 		<div class="property">{{$.GetText .Property}}{{if .Link}} <a href={{.Link.Href}}>{{.Link.Text}}</a>{{end}}</div>
 		{{if eq .Type "textarea"}}{{template "textarea" $.Nest .}}{{else}}
@@ -13,6 +13,7 @@
 			{{if .Hint}}<div class="hint">{{$.GetText .Hint}}</div>{{end}}
 		{{end}}
 	{{end}}
+	{{if .Angular}}{{template "angular-fields" .}}{{end}}
 	{{if .Data.form.Extra}}
 	<div class="extra">{{.Data.form.Extra}}</div>
 	{{end}}
@@ -20,6 +21,8 @@
 	</form>
 </div>
 {{end}}
+
+{{define "angular-fields"}}{{end}}
 
 {{define "input"}}
 {{if eq .Data.Name "Slug"}}http://polyglottis.org/extract/{{end}}<input class="formInput {{.Data.Name}}" type={{.Data.Type}} name={{.Data.Name}} value={{.Data.Value}}>

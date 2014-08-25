@@ -19,9 +19,9 @@ function LanguageCtrl($scope, $window) {
 	{{end}}
 	var slug = {{.Slug}};
 	$scope.submit = function(args) {
-		var loc = "/extract/" + slug + "/" + $scope.languageA.Code + "?ta=" + $scope.textA.Id;
+		var loc = "/extract/" + slug + "/" + $scope.languageA.Code + "?at=" + $scope.textA.Id;
 		if ($scope.languageB) {
-			loc += "&b=" + $scope.languageB.Code + "&tb=" + $scope.textB.Id;
+			loc += "&b=" + $scope.languageB.Code + "&bt=" + $scope.textB.Id;
 		}
 		$window.location = loc;
 	};
