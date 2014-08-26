@@ -29,7 +29,16 @@
 			<input class="submit" type="submit" value="{{.GetText "Search"}}">
 		</form>
 		<div class="results">
-			{{.GetText "Loading..."}}
+			<div ng-if="ResultCount == 0">{{.GetText "No results found"}}</div>
+			<div ng-if="ResultCount != 0">
+				<div class="result-count">{{.GetText "Number of results:"}} {{"{{ResultCount}}"}}</div>
+				<div class="result" ng-repeat="item in Results">
+					<div ng-repeat="flavor in item.Summaries | nonEmpty">
+						<a ng-href="/extract/{{"{{item.Slug}}"}}/{{"{{flavor.Language}}"}}?at={{"{{flavor.FlavorId}}"}}">{{"{{flavor.Title || '"}}{{.GetText "No title"}}{{"'}}"}}</a>
+						<div class="summary">{{"{{flavor.Summary}}"}}</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

@@ -21,7 +21,39 @@ homeApp.controller("HomeCtrl", function($scope, $http) {
     });
 		
 	$scope.fetchExtracts = function(langA, langB, eType) {
-		console.log(langA, langB, eType);
+		var query = "";
+		if (langA) {
+			query += "&langA=" + langA.Value;
+		}
+		if (langB) {
+			query += "&langB=" + langB.Value;
+		}
+		if (eType) {
+			query += "&type=" + eType.Value;
+		}
+		if (query.length !== 0) {
+			query = "?" + query.substr(1);
+		}
+		$http.get("/api/extract/search" + query).
+			success(function(data, status, headers, config) {
+				$scope.ResultCount = data.ExtractCount;
+				$scope.Results = data.Results;
+			}).
+			error(function(data) {
+				console.log(data);
+			});
 	};
+});
+
+homeApp.filter('nonEmpty', function () {
+	return function (items, search) {
+		var list = [];
+		angular.forEach(items, function (value, key) {
+			if (value.Title || value.Summary) {
+				list.push(value);
+			}
+		});
+		return list;
+	}
 });
 {{end}}
