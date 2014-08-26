@@ -13,8 +13,14 @@ var homeTmpl = templates.Parse("templates/home.html", "templates/home.js")
 func (s *Server) Home(context *frontend.Context) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, serverArgs *server.TmplArgs) error {
 		args := &homeArgs{serverArgs}
+		languageOptions, err := args.GetLanguageOptions()
+		if err != nil {
+			return err
+		}
+
 		args.Data = map[string]interface{}{
-			"title": "home_page",
+			"title":           "home_page",
+			"LanguageOptions": languageOptions[1:],
 		}
 		args.Angular = true
 		args.Css = "home"

@@ -4,24 +4,26 @@
 	<p>
 		{{.GetText "Please specify which kind of language extracts you are after:"}}
 	</p>
-	<div ng-app ng-controller="HomeCtrl">
-		<form>
+	<div ng-app="homeApp" ng-controller="HomeCtrl">
+		<form ng-submit="fetchExtracts(LanguageA, LanguageB, ExtractType)">
 			<div class="select">
 				<span class="label">{{.GetText "Language:"}}</span>
-				<select ng-model="Language">
-					<option value="">-- {{.GetText "Please select"}} --</option>
+				<select ng-model="LanguageA"
+								ng-options="lang as lang.Text for lang in AllLanguages | filter:languageAllowed">
+					<option value="">-- {{.GetText "Any"}} --</option>
 				</select>
 			</div>
 			<div class="select">
 				<span class="label">{{.GetText "Translation:"}}</span>
-				<select>
-					<option value="">-- {{.GetText "Please select"}} --</option>
+				<select ng-model="LanguageB"
+								ng-options="lang as lang.Text for lang in AllLanguages | filter:languageAllowed">
+					<option value="">-- {{.GetText "Any"}} --</option>
 				</select>
 			</div>
 			<div class="select">
 				<span class="label">{{.GetText "Extract Type:"}}</span>
 				<select ng-model="ExtractType" ng-options="e.Text for e in ExtractTypes track by e.Value">
-					<option value="">-- {{.GetText "Please select"}} --</option>
+					<option value="">-- {{.GetText "Any"}} --</option>
 				</select>
 			</div>
 			<input class="submit" type="submit" value="{{.GetText "Search"}}">
