@@ -21,7 +21,7 @@
 			</select>
 		</td>
 	</tr>
-	<tr>
+	<tr ng-if="(languageA.Text.Length > 1) || (languageB.Text.Length > 1)">
 		<td>
 			<div ng-if="languageA.Text.length > 1">
 				{{.GetText "Text version:"}}
@@ -45,15 +45,17 @@
 			</div>
 		</td>
 	</tr>
-	<tr>
+	<tr ng-if="languageA || languageB">
 		<td>
-			{{.GetText "Summary:"}}
-			{{"{{textA.Summary}}"}}
+			<div ng-if="languageA">
+				{{.GetText "Summary:"}}
+				{{"{{textA.Summary}}"}}
+			</div>
 		</td>
 		<td>
-		<div ng-if="languageB">
-			{{.GetText "Summary:"}}
-			{{"{{textB.Summary}}"}}
+			<div ng-if="languageB">
+				{{.GetText "Summary:"}}
+				{{"{{textB.Summary}}"}}
 			</div>
 		</td>
 	</tr>

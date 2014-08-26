@@ -40,7 +40,7 @@ func (s *ExtractServer) Flavor(context *frontend.Context, extract *content.Extra
 
 func getTitle(f *Flavor) interface{} {
 	if f == nil {
-		return i18n.Key("home_page")
+		return "home_page"
 	}
 	if f.Title.MissingA {
 		return i18n.Key("No title")
