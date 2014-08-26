@@ -48,4 +48,3 @@ func getTitle(f *Flavor) interface{} {
 		return f.Title.ContentA
 	}
 }
-

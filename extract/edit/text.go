@@ -29,6 +29,8 @@ func (s *EditServer) EditText(context *frontend.Context, e *content.Extract, a, 
 		}
 		args.Data = map[string]interface{}{
 			"title": getTitle(args.Focus),
+			"HasA":  a != nil,
+			"HasB":  b != nil,
 		}
 		return editTextTmpl.Execute(w, args)
 	})

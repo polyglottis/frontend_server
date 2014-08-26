@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"strconv"
 
 	localizer "github.com/polyglottis/frontend_server/i18n"
 	"github.com/polyglottis/frontend_server/server"
@@ -15,10 +16,10 @@ import (
 
 type TmplArgs struct {
 	*server.TmplArgs
-	languageA language.Code
-	languageB language.Code
-	ExtractId content.ExtractId
-	Slug      string
+	languageA, languageB language.Code
+	textIdA, textIdB     content.FlavorId
+	ExtractId            content.ExtractId
+	Slug                 string
 }
 
 func (a *TmplArgs) LanguageA() string {
@@ -34,15 +35,11 @@ func (a *TmplArgs) languageString(code language.Code) string {
 }
 
 func (a *TmplArgs) LinkEdit(which, what string) string {
-	query := url.Values{}
-	if len(a.ExtractId) == 0 {
-		log.Println("Unable to generate edit link when extrat id is not set.")
+	if len(a.Slug) == 0 {
+		log.Println("Unable to generate edit link when extrat slug is not set.")
 		return ""
 	}
-	query.Set("a", string(a.languageA))
-	if len(a.languageB) != 0 && a.languageB != language.Unknown.Code {
-		query.Set("b", string(a.languageB))
-	}
+	query := a.query(true)
 	switch which {
 	case "a", "b":
 		query.Set("focus", which)
@@ -52,8 +49,32 @@ func (a *TmplArgs) LinkEdit(which, what string) string {
 	return fmt.Sprintf("/extract/edit/%s/%s?%s", what, a.Slug, query.Encode())
 }
 
+func (a *TmplArgs) query(includeA bool) url.Values {
+	query := url.Values{}
+	if len(a.languageA) != 0 && a.languageA != language.Unknown.Code {
+		if includeA {
+			query.Set("a", string(a.languageA))
+		}
+		if a.textIdA != 0 {
+			query.Set("at", strconv.Itoa(int(a.textIdA)))
+		}
+	}
+	if len(a.languageB) != 0 && a.languageB != language.Unknown.Code {
+		query.Set("b", string(a.languageB))
+		if a.textIdB != 0 {
+			query.Set("bt", strconv.Itoa(int(a.textIdB)))
+		}
+	}
+	return query
+}
+
 func (a *TmplArgs) LinkRead() string {
-	return fmt.Sprintf("/extract/%s/%s", a.Slug, string(a.languageA))
+	query := a.query(false)
+	path := fmt.Sprintf("/extract/%s/%s", a.Slug, string(a.languageA))
+	if len(query) == 0 {
+		return path
+	}
+	return path + "?" + query.Encode()
 }
 
 func NewTmplArgsExtract(tmplArgs *server.TmplArgs, e *content.Extract) *TmplArgs {
@@ -69,9 +90,15 @@ func newTmplArgsTriples(tmplArgs *server.TmplArgs, e *content.Extract, a, b *fro
 	args := NewTmplArgsExtract(tmplArgs, e)
 	if a != nil {
 		args.languageA = a.Language()
+		if a.Text != nil {
+			args.textIdA = a.Text.Id
+		}
 	}
 	if b != nil {
 		args.languageB = b.Language()
+		if b.Text != nil {
+			args.textIdB = b.Text.Id
+		}
 	}
 	return args
 }
@@ -80,9 +107,11 @@ func NewTmplArgs(tmplArgs *server.TmplArgs, e *content.Extract, a, b *content.Fl
 	args := NewTmplArgsExtract(tmplArgs, e)
 	if a != nil {
 		args.languageA = a.Language
+		args.textIdA = a.Id
 	}
 	if b != nil {
 		args.languageB = b.Language
+		args.textIdB = b.Id
 	}
 	return args
 }

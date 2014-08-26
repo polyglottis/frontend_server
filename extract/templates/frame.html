@@ -1,5 +1,5 @@
 {{define "content"}}
-<div class="panel">
+<!--<div class="panel">
 	<div class="panelOptionList">
 		<div class="panelOption">
 			<input type="checkbox" id="opt-translation" checked data-dojo-type="dijit/form/CheckBox"/>
@@ -10,7 +10,7 @@
 			<label for="opt-transcript" id="i18n-transcription">{{.GetText "Transcription"}}</label>
 		</div>
 	</div>
-</div>
+</div>-->
 <div class="content" id="content">
 	{{template "actions" .}}
 	{{template "frame-content" .}}
@@ -19,16 +19,26 @@
 
 {{define "actions"}}
 <ul id="actions" class="actions">
+{{if or .Data.HasA .Data.HasB}}
 <li><a href={{.LinkRead}} class="action actionable">Read</a></li>
-<li class="menu"><span class="label action actionable">{{.GetText "Edit"}}</span><div class="menuBody">
-<div>
-{{.LanguageA}}
-<ul>
-<li><a href={{.LinkEdit "a" "text"}} class="action actionable">{{.GetText "Text"}}</a></li>
-<li><a class="action actionable">{{.GetText "Audio"}}</a></li>
-<li><a class="action actionable">{{.GetText "Transcription"}}</a></li>
-</ul>
-</div>
+<li class="menu"><span class="label action actionable">{{.GetText "Edit"}}</span><div class="menuBody editMenu">
+{{if .Data.HasA}}<div class="menuSide">
+	<div class="languageHeader">{{.LanguageA}}</div>
+	<ul>
+	<li><a href={{.LinkEdit "a" "text"}} class="action actionable">{{.GetText "Text"}}</a></li>
+	<li><a class="action missing">{{.GetText "Audio"}}</a></li>
+	<li><a class="action missing">{{.GetText "Transcription"}}</a></li>
+	</ul>
+</div>{{end}}
+{{if .Data.HasB}}<div class="menuSide">
+	<div class="languageHeader">{{.LanguageB}}</div>
+	<ul>
+	<li><a href={{.LinkEdit "b" "text"}} class="action actionable">{{.GetText "Text"}}</a></li>
+	<li><a class="action missing">{{.GetText "Audio"}}</a></li>
+	<li><a class="action missing">{{.GetText "Transcription"}}</a></li>
+	</ul>
+</div>{{end}}
 </div></li>
+{{end}}
 </ul>
 {{end}}
