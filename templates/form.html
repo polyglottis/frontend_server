@@ -4,7 +4,7 @@
 	{{if .Data.form.Error}}
 	<div class="formError">{{.GetText .Data.form.Error}}</div>
 	{{end}}
-	<form method="POST"{{if .Angular}} ng-app ng-controller="Ctrl" action="{{.Slug}}"{{end}}>
+	<form method="POST"{{if .Angular}} ng-app ng-controller="Ctrl" action="{{.Context.Url}}"{{end}}>
 	{{range .Data.form.Fields}}
 		<div class="property">{{$.GetText .Property}}{{if .Link}} <a href={{.Link.Href}}>{{.Link.Text}}</a>{{end}}</div>
 		{{if eq .Type "textarea"}}{{template "textarea" $.Nest .}}{{else}}

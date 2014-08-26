@@ -33,7 +33,7 @@
 			<div class="property">{{$.GetText "Paragraph"}} {{.BlockId}}</div>
 			{{$blockId := .BlockId}}{{range $iline, $y := .Lines}}
 				<div class="line">
-					{{if $.OtherLanguage}}
+					{{if and ($.OtherLanguage) (.ContentOther)}}
 					{{template "language" $.LanguageOther}}
 					{{template "other" .ContentOther}}
 					{{end}}

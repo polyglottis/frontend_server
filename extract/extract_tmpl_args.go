@@ -77,6 +77,15 @@ func (a *TmplArgs) LinkRead() string {
 	return path + "?" + query.Encode()
 }
 
+func (a *TmplArgs) LinkNewFlavor() string {
+	query := a.query(true)
+	path := fmt.Sprintf("/extract/edit/new_flavor/%s", a.Slug)
+	if len(query) == 0 {
+		return path
+	}
+	return path + "?" + query.Encode()
+}
+
 func NewTmplArgsExtract(tmplArgs *server.TmplArgs, e *content.Extract) *TmplArgs {
 	args := &TmplArgs{TmplArgs: tmplArgs}
 	if e != nil {

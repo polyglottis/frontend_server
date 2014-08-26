@@ -9,7 +9,7 @@
 	<div class="hint">{{.GetText "Select one language (or language family)."}}</div>
 
 <div ng-if='flavors[Language.Value]["TEXT"].length > 0'>
-	<div class="property">{{.GetText "Language Comment for New Flavor"}}</div>
+	<div class="property">{{.GetText "Language Comment for New Version"}}</div>
 	<input class="formInput" type="text" name="MainComment" ng-model="MainComment">
 	{{if .Data.errors.MainComment}}<div class="error">{{.GetText .Data.errors.MainComment}}</div>{{end}}
 	<div class="hint">{{.GetText "What makes your new version different from the existing one?"}}
@@ -17,10 +17,12 @@
 </div>
 
 <div ng-if='flavors[Language.Value]["TEXT"].length == 1'>
-	<div class="property">{{.GetText "Language Comment for Existing Flavor"}}</div>
+	<div class="property">{{.GetText "Language Comment for Existing Version"}}</div>
 	<input class="formInput" type="text" name="OtherComment" ng-model="OtherComment">
 	{{if .Data.errors.OtherComment}}<div class="error">{{.GetText .Data.errors.OtherComment}}</div>{{end}}
 	<div class="hint">{{.GetText "Write a comment on the existing version."}}
-	{{.GetText "Please write in {{Language.Text}}."}}</div>
+	{{.GetText "Please write in {{Language.Text}}."}}
+	</div>
+	<div><a ng-href="/extract/{{.Slug}}/{{"{{Language.Value}}"}}">{{.GetText "View the existing version."}}</a></div>
 </div>
 {{end}}

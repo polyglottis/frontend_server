@@ -1,7 +1,7 @@
 {{define "frame-content"}}
 <div>
-<form ng-app ng-controller="LanguageCtrl" ng-submit="submit()">
-<table class="language-select"><tbody>
+<form class="language-select" ng-app ng-controller="LanguageCtrl" ng-submit="submit()">
+<table><tbody>
 	<tr>
 		<td>{{.GetText "A-side"}}</td><td>{{.GetText "B-side"}}</td>
 	</tr>
@@ -60,7 +60,8 @@
 		</td>
 	</tr>
 </tbody></table>
-<input type="submit" value="{{.GetText "Display selection"}}">
+<input type="submit" class="submit" value="{{.GetText "Display selection"}}">
+<a class="create-new-flavor" href="{{.LinkNewFlavor}}">{{.GetText "Create a new translation."}}</a>
 </form>
 </div>
 	{{if .Data.flavors}}<div class="extractContent" id="extractContent">
