@@ -1,40 +1,46 @@
 {{define "frame-content"}}
-	<form class="form edit-text">
+	<form class="form edit-text" method="POST">
 	<h1>{{.GetText "Edit Text"}}</h1>
-	{{if not .LoggedIn}}
+	{{if .Data.errors.FORM}}
+	<div class="formError">{{.GetText .Data.errors.FORM}}</div>
+	{{else if not .LoggedIn}}
 	<div class="formError">{{.GetText "warning_sign_in"}}</div>
 	{{end}}
 	<div class="editSummary">
 		<div class=property>{{.GetText "Summary"}}</div>
+		{{if .Data.errors.Summary}}<div class="error">{{.GetText .Data.errors.Summary}}</div>{{end}}
 		<div class="hint">{{.GetText "Enter a short summary. This will appear in search results."}}</div>
-		{{if and (.OtherLanguage) (.NoFocus.Summary)}}
+		{{if .OtherLanguage}}{{if .NoFocus.Summary}}
 		{{template "language" .LanguageOther}}
 		{{template "other" .NoFocus.Summary}}
-		{{end}}
+		{{end}}{{end}}
 		{{template "language" .LanguageUnderFocus}}
-		<textarea>{{.Focus.Summary}}</textarea>
+		<textarea name="Summary">{{.Data.defaults.Get "Summary"}}</textarea>
 	</div>
 	<div class="editTitle">
 		<div class=property>{{.GetText "Paragraph"}} 1: {{.GetText "Title"}}</div>
+		{{if .Data.errors.Title}}<div class="error">{{.GetText .Data.errors.Title}}</div>{{end}}
 		<div class="hint">{{.GetText "Type the title here."}}</div>
 		{{if and (.OtherLanguage) (.TitleOther)}}
 		{{template "language" .LanguageOther}}
 		{{template "other" .TitleOther}}
 		{{end}}
 		{{template "language" .LanguageUnderFocus}}
-		<input class="formInput Title" value="{{.TitleUnderFocus}}" type="text" id="title">
+		<input name="Title" class="formInput Title" value="{{.Data.defaults.Get "Title"}}" type="text" id="title">
 	</div>
 	<div class="editBody">
-		{{range .EditBlocks}}
-			<div class="property">{{$.GetText "Paragraph"}} {{.Id}}</div>
-			{{range .Lines}}
+		{{range $iblock, $x := .EditBlocks}}
+			<div class="property">{{$.GetText "Paragraph"}} {{.BlockId}}</div>
+			{{$blockId := .BlockId}}{{range $iline, $y := .Lines}}
 				<div class="line">
 					{{if $.OtherLanguage}}
 					{{template "language" $.LanguageOther}}
 					{{template "other" .ContentOther}}
 					{{end}}
 					{{template "language" $.LanguageUnderFocus}}
-					<textarea class="short">{{.ContentUnderFocus}}</textarea>
+					<textarea name="Blocks.{{$iblock}}.Units.{{$iline}}.Content" class="short">{{.ContentUnderFocus}}</textarea>
+					<input name="Blocks.{{$iblock}}.Units.{{$iline}}.BlockId" style="display:none;" value="{{$blockId}}">
+					<input name="Blocks.{{$iblock}}.Units.{{$iline}}.UnitId" style="display:none;" value="{{.UnitId}}">
 				</div>
 			{{end}}
 		{{end}}

@@ -21,16 +21,24 @@ func (s *EditServer) EditText(context *frontend.Context, e *content.Extract, a, 
 			TmplArgs:     extract.NewTmplArgs(serverArgs, e, a, b),
 			ExtractShape: e.Shape(),
 		}
-		if context.Query.Get("focus") != "b" {
-			context.Query.Set("focus", "a")
+		if context.IsFocusOnA() {
 			args.Focus, args.NoFocus = a, b
 		} else {
 			args.Focus, args.NoFocus = b, a
 		}
+		defaults := context.Defaults
+		if sum := defaults.Get("Summary"); sum == "" {
+			defaults.Set("Summary", args.Focus.Summary)
+		}
+		if title := defaults.Get("Title"); title == "" {
+			defaults.Set("Title", args.TitleUnderFocus())
+		}
 		args.Data = map[string]interface{}{
-			"title": getTitle(args.Focus),
-			"HasA":  a != nil,
-			"HasB":  b != nil,
+			"title":    getTitle(args.Focus),
+			"HasA":     a != nil,
+			"HasB":     b != nil,
+			"errors":   context.Errors,
+			"defaults": defaults,
 		}
 		args.Css = "edit"
 		return editTextTmpl.Execute(w, args)
@@ -53,7 +61,7 @@ func getTitle(f *content.Flavor) interface{} {
 }
 
 func (a *TmplArgs) LanguageUnderFocus() string {
-	if a.Context.Query.Get("focus") == "a" {
+	if a.Context.IsFocusOnA() {
 		return a.LanguageA()
 	} else {
 		return a.LanguageB()
@@ -61,7 +69,7 @@ func (a *TmplArgs) LanguageUnderFocus() string {
 }
 
 func (a *TmplArgs) LanguageOther() string {
-	if a.Context.Query.Get("focus") == "a" {
+	if a.Context.IsFocusOnA() {
 		return a.LanguageB()
 	} else {
 		return a.LanguageA()
@@ -73,27 +81,28 @@ func (a *TmplArgs) OtherLanguage() bool {
 }
 
 func (a *TmplArgs) TitleUnderFocus() string {
-	f := a.Focus
-	if len(f.Blocks) == 0 || f.Blocks[0][0].BlockId != 1 {
+	title := a.Focus.GetTitle()
+	if title == nil {
 		return ""
 	}
-	return f.Blocks[0][0].Content
+	return title.Content
 }
 
 func (a *TmplArgs) TitleOther() string {
-	f := a.NoFocus
-	if f == nil || len(f.Blocks) == 0 || f.Blocks[0][0].BlockId != 1 {
+	title := a.NoFocus.GetTitle()
+	if title == nil {
 		return ""
 	}
-	return f.Blocks[0][0].Content
+	return title.Content
 }
 
 type editBlock struct {
-	Id    content.BlockId
-	Lines []*editLine
+	BlockId content.BlockId
+	Lines   []*editLine
 }
 
 type editLine struct {
+	UnitId            content.UnitId
 	ContentUnderFocus string
 	ContentOther      string
 }
@@ -102,10 +111,10 @@ func (a *TmplArgs) EditBlocks() []*editBlock {
 	blocks := make([]*editBlock, 0, len(a.ExtractShape))
 	a.ExtractShape.IterateFlavorBody(a.Focus, func(blockId content.BlockId) {
 		blocks = append(blocks, &editBlock{
-			Id: blockId,
+			BlockId: blockId,
 		})
 	}, func(blockId content.BlockId, unitId content.UnitId, u *content.Unit) {
-		line := &editLine{}
+		line := &editLine{UnitId: unitId}
 		if u != nil {
 			line.ContentUnderFocus = u.Content
 		}
