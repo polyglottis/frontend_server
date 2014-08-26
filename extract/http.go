@@ -110,8 +110,8 @@ func (s *ExtractServer) Flavor(context *frontend.Context, extract *content.Extra
 		args.Data = map[string]interface{}{
 			"title":   getTitle(flavors),
 			"flavors": flavors,
-			"HasA":    a != nil,
-			"HasB":    b != nil,
+			"HasA":    flavorA != nil,
+			"HasB":    flavorB != nil,
 		}
 		args.Data["LanguageOptions"], args.Data["Selection"] = args.languageOptions(extract)
 		return flavorTmpl.Execute(w, args)
@@ -159,23 +159,23 @@ func shapeFlavors(shape content.ExtractShape, flavorA, flavorB *content.Flavor) 
 	if flavorA != nil {
 		f.IdA = flavorA.Id
 		f.LanguageA = flavorA.Language
+		if len(flavorA.Blocks) != 0 {
+			u := flavorA.Blocks[0][0]
+			if u.BlockId == 1 && u.Id == 1 {
+				f.Title.ContentA = u.Content
+				f.Title.MissingA = false
+			}
+		}
 	}
 	if flavorB != nil {
 		f.IdB = flavorB.Id
 		f.LanguageB = flavorB.Language
-	}
-	if len(flavorA.Blocks) != 0 {
-		u := flavorA.Blocks[0][0]
-		if u.BlockId == 1 && u.Id == 1 {
-			f.Title.ContentA = u.Content
-			f.Title.MissingA = false
-		}
-	}
-	if len(flavorB.Blocks) != 0 {
-		u := flavorB.Blocks[0][0]
-		if u.BlockId == 1 && u.Id == 1 {
-			f.Title.ContentB = u.Content
-			f.Title.MissingB = false
+		if len(flavorB.Blocks) != 0 {
+			u := flavorB.Blocks[0][0]
+			if u.BlockId == 1 && u.Id == 1 {
+				f.Title.ContentB = u.Content
+				f.Title.MissingB = false
+			}
 		}
 	}
 	shape.IterateFlavorBodies(flavorA, flavorB, func(blockId content.BlockId) {
