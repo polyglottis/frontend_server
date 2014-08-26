@@ -11,6 +11,24 @@
 	}, {
 		"id": "warning_sign_in",
 		"translation": "You must sign in to create or edit content. Please sign in or create an account. Otherwise your changes will not be recorded."
+	}, {
+	"id": "ExtractType_dialog",
+	"translation": "Dialog"
+	},{
+	"id":"ExtractType_word_list",
+	"translation": "Word list"
+	},{
+	"id":"ExtractType_short_story",
+	"translation": "Short story"
+	},{
+	"id":"ExtractType_article",
+	"translation": "Article"
+	},{
+	"id":"ExtractType_poem",
+	"translation": "Poem"
+	},{
+	"id":"ExtractType_song",
+	"translation": "Song"
 	},
 	{
 		"id": "lang_aa", "translation": "Afar"

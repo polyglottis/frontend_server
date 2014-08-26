@@ -4,7 +4,6 @@ import (
 	"io"
 
 	"github.com/polyglottis/frontend_server/server"
-	"github.com/polyglottis/platform/content"
 	"github.com/polyglottis/platform/frontend"
 	"github.com/polyglottis/platform/i18n"
 )
@@ -31,7 +30,7 @@ func (s *EditServer) NewExtract(context *frontend.Context) ([]byte, error) {
 				Property:      "Extract Type",
 				Hint:          "Select the option which most accurately describes your new extract.",
 				InputTemplate: server.InputSelect,
-				Options:       extractTypeOptions,
+				Options:       server.ExtractTypeOptions,
 			}, {
 				Name:          "Language",
 				Type:          server.InputSelect,
@@ -68,17 +67,4 @@ func (s *EditServer) NewExtract(context *frontend.Context) ([]byte, error) {
 		args.Css = "form"
 		return server.FormTmpl.Execute(w, args)
 	})
-}
-
-var extractTypeOptions []*server.FormOption
-
-func init() {
-	extractTypeOptions = make([]*server.FormOption, len(content.AllExtractTypes)+1)
-	extractTypeOptions[0] = server.PleaseSelect
-	for i, eType := range content.AllExtractTypes {
-		extractTypeOptions[i+1] = &server.FormOption{
-			Value: string(eType),
-			Key:   i18n.Key("ExtractType_" + eType),
-		}
-	}
 }

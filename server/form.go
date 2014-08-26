@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/polyglottis/frontend_server/templates"
+	"github.com/polyglottis/platform/content"
 	"github.com/polyglottis/platform/frontend"
 	"github.com/polyglottis/platform/i18n"
 )
@@ -64,6 +65,19 @@ func (f *Form) Apply(c *frontend.Context) {
 		field.Value = c.Defaults.Get(field.Name)
 		if err, ok := c.Errors[field.Name]; ok {
 			field.Error = err
+		}
+	}
+}
+
+var ExtractTypeOptions []*FormOption
+
+func init() {
+	ExtractTypeOptions = make([]*FormOption, len(content.AllExtractTypes)+1)
+	ExtractTypeOptions[0] = PleaseSelect
+	for i, eType := range content.AllExtractTypes {
+		ExtractTypeOptions[i+1] = &FormOption{
+			Value: string(eType),
+			Key:   i18n.Key("ExtractType_" + eType),
 		}
 	}
 }

@@ -1,5 +1,34 @@
 {{define "content"}}
-<div>
-	<h1> Hi there! </h1>
+<div class="content home">
+	<h1>{{.GetText "Welcome!"}}</h1>
+	<p>
+		{{.GetText "Please specify which kind of language extracts you are after:"}}
+	</p>
+	<div ng-app ng-controller="HomeCtrl">
+		<form>
+			<div class="select">
+				<span class="label">{{.GetText "Language:"}}</span>
+				<select ng-model="Language">
+					<option value="">-- {{.GetText "Please select"}} --</option>
+				</select>
+			</div>
+			<div class="select">
+				<span class="label">{{.GetText "Translation:"}}</span>
+				<select>
+					<option value="">-- {{.GetText "Please select"}} --</option>
+				</select>
+			</div>
+			<div class="select">
+				<span class="label">{{.GetText "Extract Type:"}}</span>
+				<select ng-model="ExtractType" ng-options="e.Text for e in ExtractTypes track by e.Value">
+					<option value="">-- {{.GetText "Please select"}} --</option>
+				</select>
+			</div>
+			<input class="submit" type="submit" value="{{.GetText "Search"}}">
+		</form>
+		<div class="results">
+			{{.GetText "Loading..."}}
+		</div>
+	</div>
 </div>
 {{end}}
