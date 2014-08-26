@@ -52,7 +52,7 @@ func (s *EditServer) NewExtract(context *frontend.Context) ([]byte, error) {
 				Name:     "Summary",
 				Type:     server.InputTextArea,
 				Property: "Summary",
-				Hint:     "Enter a short summary of your extract, in the language you selected above. This will appear in search results only.",
+				Hint:     "Enter a short summary of your extract, in the language you selected above. This will appear in search results.",
 			}, {
 				Name:     "Text",
 				Type:     server.InputTextArea,

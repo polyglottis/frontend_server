@@ -58,7 +58,7 @@ func (f *Form) Apply(c *frontend.Context) {
 	if err, ok := c.Errors["FORM"]; ok {
 		f.Error = err
 	} else if f.MustLogIn && !c.LoggedIn() {
-		f.Error = i18n.Key("You must sign in to create or edit content. Please sign in or create an account. Otherwise your changes will not be recorded.")
+		f.Error = i18n.Key("warning_sign_in")
 	}
 	for _, field := range f.Fields {
 		field.Value = c.Defaults.Get(field.Name)

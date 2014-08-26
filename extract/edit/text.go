@@ -32,6 +32,7 @@ func (s *EditServer) EditText(context *frontend.Context, e *content.Extract, a, 
 			"HasA":  a != nil,
 			"HasB":  b != nil,
 		}
+		args.Css = "edit"
 		return editTextTmpl.Execute(w, args)
 	})
 }
@@ -74,7 +75,7 @@ func (a *TmplArgs) OtherLanguage() bool {
 func (a *TmplArgs) TitleUnderFocus() string {
 	f := a.Focus
 	if len(f.Blocks) == 0 || f.Blocks[0][0].BlockId != 1 {
-		return a.GetText(i18n.Key("Type the title here"))
+		return ""
 	}
 	return f.Blocks[0][0].Content
 }

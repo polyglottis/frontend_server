@@ -8,8 +8,10 @@
 	}, {
 		"id": "Sign out",
 		"translation": "Sign out"
+	}, {
+		"id": "warning_sign_in",
+		"translation": "You must sign in to create or edit content. Please sign in or create an account. Otherwise your changes will not be recorded."
 	},
-	
 	{
 		"id": "lang_aa", "translation": "Afar"
   }, {

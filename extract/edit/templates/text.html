@@ -1,22 +1,48 @@
 {{define "frame-content"}}
-	<div class="extractContent edit">
-	<div class="editTitle">
-		<h1>{{.GetText "Block"}} 1 ({{.GetText "Title"}})</h1>
-		{{if and (.OtherLanguage) (.TitleOther)}}
-		<div><span class="language">{{.LanguageOther}}:</span><span>{{.TitleOther}}</span></div>
+	<form class="form edit-text">
+	<h1>{{.GetText "Edit Text"}}</h1>
+	{{if not .LoggedIn}}
+	<div class="formError">{{.GetText "warning_sign_in"}}</div>
+	{{end}}
+	<div class="editSummary">
+		<div class=property>{{.GetText "Summary"}}</div>
+		<div class="hint">{{.GetText "Enter a short summary. This will appear in search results."}}</div>
+		{{if and (.OtherLanguage) (.NoFocus.Summary)}}
+		{{template "language" .LanguageOther}}
+		{{template "other" .NoFocus.Summary}}
 		{{end}}
-		<div><span class="language">{{.LanguageUnderFocus}}:</span><input value={{.TitleUnderFocus}} type="text" id="title"></div>
+		{{template "language" .LanguageUnderFocus}}
+		<textarea>{{.Focus.Summary}}</textarea>
+	</div>
+	<div class="editTitle">
+		<div class=property>{{.GetText "Paragraph"}} 1: {{.GetText "Title"}}</div>
+		<div class="hint">{{.GetText "Type the title here."}}</div>
+		{{if and (.OtherLanguage) (.TitleOther)}}
+		{{template "language" .LanguageOther}}
+		{{template "other" .TitleOther}}
+		{{end}}
+		{{template "language" .LanguageUnderFocus}}
+		<input class="formInput Title" value="{{.TitleUnderFocus}}" type="text" id="title">
 	</div>
 	<div class="editBody">
 		{{range .EditBlocks}}
-			<h1>{{$.GetText "Block"}} {{.Id}}</h1>
+			<div class="property">{{$.GetText "Paragraph"}} {{.Id}}</div>
 			{{range .Lines}}
-				{{if $.OtherLanguage}}
-				<div><span class="language">{{$.LanguageOther}}:</span><span>{{.ContentOther}}</span></div>
-				{{end}}
-				<div><span class="language">{{$.LanguageUnderFocus}}:</span><textarea>{{.ContentUnderFocus}}</textarea></div>
+				<div class="line">
+					{{if $.OtherLanguage}}
+					{{template "language" $.LanguageOther}}
+					{{template "other" .ContentOther}}
+					{{end}}
+					{{template "language" $.LanguageUnderFocus}}
+					<textarea class="short">{{.ContentUnderFocus}}</textarea>
+				</div>
 			{{end}}
 		{{end}}
 	</div>
-	</div>
+	<a href="{{.LinkRead}}" class="cancel">{{.GetText "Cancel"}}</a>
+	<input type="submit" class="submit" value="{{.GetText "Save changes"}}">
+	</form>
 {{end}}
+
+{{define "language"}}<div class="language">{{.}}</div>{{end}}
+{{define "other"}}<div class="other">{{.}}</div>{{end}}
