@@ -24,7 +24,7 @@ func (s *EditServer) NewFlavor(context *frontend.Context, e *content.Extract) ([
 		form := &server.Form{
 			MustLogIn: true,
 			Header:    "Create a new version of the same extract",
-			Submit:    "Save",
+			Submit:    "Create",
 		}
 		if defaultsLang := context.Defaults.Get("Language"); len(defaultsLang) == 0 {
 			context.Defaults.Set("Language", context.Query.Get("a"))
