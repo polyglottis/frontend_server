@@ -41,13 +41,37 @@ homeApp.controller("HomeCtrl", function($scope, $http) {
 		$http.get("/api/extract/search" + query).
 			success(function(data, status, headers, config) {
 				$scope.ResultCount = data.ExtractCount;
-				$scope.Results = data.Results;
+				$scope.Results = reorder($scope, data.Results);
 			}).
 			error(function(data) {
 				console.log(data);
 			});
 	};
 });
+
+function reorder($scope, results) {
+	angular.forEach(results, function(r) {
+		var sums = [];
+		var lang1, lang2;
+		angular.forEach(r.Summaries, function(s) {
+			if ($scope.LanguageA && (s.Language === $scope.LanguageA.Value)) {
+				lang1 = s;
+			} else if ($scope.LanguageB && (s.Language === $scope.LanguageB.Value)) {
+				lang2 = s;
+			} else {
+				sums.push(s);
+			}
+		});
+		if (lang2) {
+			sums.unshift(lang2);
+		}
+		if (lang1) {
+			sums.unshift(lang1);
+		}
+		r.Summaries = sums;
+	});
+	return results;
+}
 
 homeApp.filter('nonEmpty', function () {
 	return function (items, search) {
