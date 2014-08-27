@@ -1,6 +1,7 @@
 {{define "angular-script"}}
 var homeApp = angular.module('homeApp', []);
 var allowedLanguages = {};
+var langCodeToLabel = {};
 
 homeApp.controller("HomeCtrl", function($scope, $http) {
 	$scope.ExtractTypes = {{.ExtractTypes}};
@@ -8,6 +9,9 @@ homeApp.controller("HomeCtrl", function($scope, $http) {
 	$scope.languageAllowed = function(lang) {
 		return (lang.Value in allowedLanguages);
 	}
+	angular.forEach($scope.AllLanguages, function(lang) {
+		langCodeToLabel[lang.Value] = lang.Text;
+	});
 	
 	$http({method: 'GET', url: '/api/extract/languages'}).
     success(function(data, status, headers, config) {
@@ -48,12 +52,18 @@ homeApp.controller("HomeCtrl", function($scope, $http) {
 homeApp.filter('nonEmpty', function () {
 	return function (items, search) {
 		var list = [];
-		angular.forEach(items, function (value, key) {
+		angular.forEach(items, function (value) {
 			if (value.Title || value.Summary) {
 				list.push(value);
 			}
 		});
 		return list;
+	}
+});
+
+homeApp.filter('languageLabel', function () {
+	return function (langCode) {
+		return langCodeToLabel[langCode];
 	}
 });
 {{end}}

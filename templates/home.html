@@ -14,14 +14,14 @@
 	<div ng-app="homeApp" ng-controller="HomeCtrl">
 		<form ng-submit="fetchExtracts(LanguageA, LanguageB, ExtractType)">
 			<div class="select">
-				<span class="label">{{.GetText "Language:"}}</span>
+				<span class="label">{{.GetText "Language 1:"}}</span>
 				<select ng-model="LanguageA"
 								ng-options="lang as lang.Text for lang in AllLanguages | filter:languageAllowed">
 					<option value="">-- {{.GetText "Any"}} --</option>
 				</select>
 			</div>
 			<div class="select">
-				<span class="label">{{.GetText "Translation:"}}</span>
+				<span class="label">{{.GetText "Language 2:"}}</span>
 				<select ng-model="LanguageB"
 								ng-options="lang as lang.Text for lang in AllLanguages | filter:languageAllowed">
 					<option value="">-- {{.GetText "Any"}} --</option>
@@ -33,15 +33,18 @@
 					<option value="">-- {{.GetText "Any"}} --</option>
 				</select>
 			</div>
-			<input class="submit" type="submit" value="{{.GetText "Search"}}">
+			<input class="button submit" type="submit" value="{{.GetText "Search"}}">
 		</form>
 		<div class="results">
 			<div ng-if="ResultCount == 0">{{.GetText "No results found"}}</div>
 			<div ng-if="ResultCount != 0">
 				<div class="result-count">{{.GetText "Number of results:"}} {{"{{ResultCount}}"}}</div>
 				<div class="result" ng-repeat="item in Results">
-					<div ng-repeat="flavor in item.Summaries | nonEmpty">
-						<a ng-href="/extract/{{"{{item.Slug}}"}}/{{"{{flavor.Language}}"}}?at={{"{{flavor.FlavorId}}"}}">{{"{{flavor.Title || '"}}{{.GetText "No title"}}{{"'}}"}}</a>
+					<div ng-repeat="flavor in item.Summaries | nonEmpty" ng-class="{first: $first}">
+						<div class="result-head">
+							<span class="language">{{"{{flavor.Language | languageLabel}}"}}:</span>
+							<a ng-href="/extract/{{"{{item.Slug}}"}}/{{"{{flavor.Language}}"}}?at={{"{{flavor.FlavorId}}"}}">{{"{{flavor.Title || '("}}{{.GetText "No title"}}{{")'}}"}}</a>
+						</div>
 						<div class="summary">{{"{{flavor.Summary}}"}}</div>
 					</div>
 				</div>
