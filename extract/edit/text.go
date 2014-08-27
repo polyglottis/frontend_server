@@ -13,7 +13,7 @@ import (
 
 type EditServer struct{}
 
-var editTextTmpl = templates.Parse("extract/templates/actions.html", "extract/edit/templates/text.html")
+var editTextTmpl = templates.Parse("extract/templates/actions.html", "extract/edit/templates/text.html", "extract/edit/templates/text.js")
 
 func (s *EditServer) EditText(context *frontend.Context, e *content.Extract, a, b *content.Flavor) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, serverArgs *server.TmplArgs) error {
@@ -23,6 +23,7 @@ func (s *EditServer) EditText(context *frontend.Context, e *content.Extract, a, 
 		}
 		if context.IsFocusOnA() {
 			args.Focus, args.NoFocus = a, b
+			args.FocusOnA = true
 		} else {
 			args.Focus, args.NoFocus = b, a
 		}
@@ -33,6 +34,7 @@ func (s *EditServer) EditText(context *frontend.Context, e *content.Extract, a, 
 		if title := defaults.Get("Title"); title == "" {
 			defaults.Set("Title", args.TitleUnderFocus())
 		}
+		args.Angular = true
 		args.Data = map[string]interface{}{
 			"title":    getTitle(args.Focus),
 			"HasA":     a != nil,
@@ -40,6 +42,7 @@ func (s *EditServer) EditText(context *frontend.Context, e *content.Extract, a, 
 			"errors":   context.Errors,
 			"defaults": defaults,
 		}
+		args.Data["LanguageOptions"], args.Data["Selection"] = args.LanguageOptions(e)
 		args.Css = "edit"
 		return editTextTmpl.Execute(w, args)
 	})
@@ -50,6 +53,7 @@ type TmplArgs struct {
 	ExtractShape content.ExtractShape
 	Focus        *content.Flavor
 	NoFocus      *content.Flavor
+	FocusOnA     bool
 }
 
 func getTitle(f *content.Flavor) interface{} {

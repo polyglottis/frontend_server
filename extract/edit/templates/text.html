@@ -1,3 +1,35 @@
+{{define "panel-content"}}
+<div class="panel-div language-select">
+	<div class="panel-header">{{.GetText "Selection"}}</div>
+	<form ng-app ng-controller="LanguageCtrl" ng-submit="submit()">
+		<div class="language-div">
+			<div class="language-label">{{.GetText "Language 1"}}</div>
+			<div class="language-selected">{{.LanguageUnderFocus}}</div>
+		</div>
+		<div class="language-div">
+			<div class="language-label">{{.GetText "Language 2"}}</div>
+			<select ng-model="language"
+							ng-change="change(language)"
+							ng-options="lang.Label for lang in languages track by lang.Code">
+					<option value="">-- {{.GetText "Nothing"}} --</option>
+			</select>
+			<div ng-show="language.Text.length > 1">
+				{{.GetText "Text version"}}
+				<select ng-model="text"
+								ng-options="text.Comment for text in language.Text">
+				</select>
+			</div>
+		</div>
+		<input type="submit" class="button submit" value="{{.GetText "Apply"}}">
+	</form>
+</div>
+<div class="panel-div">
+	<div class="panel-header">{{.GetText "Actions"}}</div>
+	<a class="panel-action" href="{{.LinkNewFlavor}}">{{.GetText "New translation"}}</a>
+	<a class="panel-action" href="/extract/edit/new">{{.GetText "New extract"}}</a>
+</div>
+{{end}}
+
 {{define "extract-content"}}
 	<form class="form edit-text" method="POST">
 	<h1>{{.GetText "Edit Text"}}</h1>

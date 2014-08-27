@@ -214,7 +214,7 @@ func newSelection() *selection {
 	return &selection{LanguageA: -1, LanguageB: -1}
 }
 
-func (args *TmplArgs) languageOptions(e *content.Extract) ([]*languageOption, *selection) {
+func (args *TmplArgs) LanguageOptions(e *content.Extract) ([]*languageOption, *selection) {
 	options := make([]*languageOption, 0, len(e.Flavors))
 	selected := newSelection()
 	for langCode, fByType := range e.Flavors {
