@@ -18,12 +18,13 @@ func (s *EditServer) NewExtract(context *frontend.Context) ([]byte, error) {
 		form := &server.Form{
 			MustLogIn: true,
 			Header:    "Create a new extract",
+			Hint:      "extract_creation_hint",
 			Submit:    "Save new extract",
 			Fields: []*server.FormField{{
 				Name:     "Slug",
 				Type:     server.InputText,
 				Property: "Url Slug",
-				Hint:     "Use at least five characters.",
+				Hint:     "This is going to be the address of your new extract on the web. Type something relevant to your extract, like the title. Note that special characters are not allowed here.",
 			}, {
 				Name:          "ExtractType",
 				Type:          server.InputSelect,

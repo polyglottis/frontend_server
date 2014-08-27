@@ -4,7 +4,8 @@
 	{{if .Data.form.Error}}
 	<div class="formError">{{.GetText .Data.form.Error}}</div>
 	{{end}}
-	<form method="POST"{{if .Angular}} ng-app ng-controller="Ctrl" action="{{.Context.Url}}"{{end}}>
+	{{if .Data.form.Hint}}<div class="formHint">{{.GetText .Data.form.Hint}}</div>{{end}}
+	<form method="POST" autocomplete="off"{{if .Angular}} ng-app ng-controller="Ctrl" action="{{.Context.Url}}"{{end}}>
 	{{range .Data.form.Fields}}
 		<div class="property">{{$.GetText .Property}}{{if .Link}} <a href={{.Link.Href}}>{{.Link.Text}}</a>{{end}}</div>
 		{{if eq .Type "textarea"}}{{template "textarea" $.Nest .}}{{else}}

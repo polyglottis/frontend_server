@@ -12,7 +12,7 @@ import (
 
 type ExtractServer struct{}
 
-var flavorTmpl = templates.Parse("extract/templates/frame.html", "extract/templates/flavor.html", "extract/templates/language_select.js")
+var flavorTmpl = templates.Parse("extract/templates/actions.html", "extract/templates/flavor.html", "extract/templates/language_select.js")
 
 func (s *ExtractServer) Flavor(context *frontend.Context, extract *content.Extract, a, b *frontend.FlavorTriple) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, tmplArgs *server.TmplArgs) error {
@@ -34,6 +34,7 @@ func (s *ExtractServer) Flavor(context *frontend.Context, extract *content.Extra
 			"HasB":    flavorB != nil,
 		}
 		args.Data["LanguageOptions"], args.Data["Selection"] = args.languageOptions(extract)
+		args.Css = "extract"
 		return flavorTmpl.Execute(w, args)
 	})
 }

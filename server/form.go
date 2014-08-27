@@ -12,6 +12,7 @@ var FormTmpl = templates.Parse("templates/form.html")
 type Form struct {
 	Header    i18n.Key
 	Error     i18n.Key
+	Hint      i18n.Key
 	Fields    []*FormField
 	Extra     i18n.Key
 	Submit    i18n.Key

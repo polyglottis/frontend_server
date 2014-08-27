@@ -221,9 +221,11 @@ func (args *TmplArgs) languageOptions(e *content.Extract) ([]*languageOption, *s
 		if flavors, ok := fByType[content.Text]; ok {
 			if args.languageA == langCode {
 				selected.LanguageA = len(options)
+				selected.TextA = args.indexOfSelection(flavors, args.textIdA)
 			}
 			if args.languageB == langCode {
 				selected.LanguageB = len(options)
+				selected.TextB = args.indexOfSelection(flavors, args.textIdB)
 			}
 			options = append(options, &languageOption{
 				Code:  langCode,
@@ -233,6 +235,15 @@ func (args *TmplArgs) languageOptions(e *content.Extract) ([]*languageOption, *s
 		}
 	}
 	return options, selected
+}
+
+func (args *TmplArgs) indexOfSelection(flavors []*content.Flavor, id content.FlavorId) int {
+	for i, f := range flavors {
+		if f.Id == id {
+			return i
+		}
+	}
+	return 0
 }
 
 func (args *TmplArgs) versionOptions(flavors []*content.Flavor) []*versionOption {

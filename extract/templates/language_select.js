@@ -2,7 +2,9 @@
 function LanguageCtrl($scope, $window) {
 	$scope.languages = {{.Data.LanguageOptions}};
 	$scope.changeA = function(lang) {
-		$scope.textA = lang.Text[0];
+		if (lang) {
+			$scope.textA = lang.Text[0];
+		}
 	}
 	$scope.changeB = function(lang) {
 		if (lang) {

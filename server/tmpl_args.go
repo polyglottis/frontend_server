@@ -14,7 +14,7 @@ func GetTmplArgs(context *frontend.Context) (*TmplArgs, error) {
 	localizer := localizer.NewLocalizer(context)
 	return &TmplArgs{
 		Context:      context,
-		Css:          "extract",
+		Css:          "error",
 		Localizer:    localizer,
 		AngularLocal: config.Get().AngularLocal,
 	}, nil

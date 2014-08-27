@@ -1,3 +1,10 @@
+{{define "panel-content"}}
+<div class="panel-div">
+	<div class="panel-header">{{.GetText "Actions"}}</div>
+	<a class="panel-action" href="/extract/edit/new">{{.GetText "New extract"}}</a>
+</div>
+{{end}}
+
 {{define "content"}}
 <div class="content home">
 	<h1>{{.GetText "Welcome!"}}</h1>

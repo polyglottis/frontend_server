@@ -1,80 +1,61 @@
-{{define "frame-content"}}
-<div>
-<form class="language-select" ng-app ng-controller="LanguageCtrl" ng-submit="submit()">
-<table><tbody>
-	<tr>
-		<td>{{.GetText "A-side"}}</td><td>{{.GetText "B-side"}}</td>
-	</tr>
-	<tr>
-		<td>
-			{{.GetText "Language:"}}
+{{define "panel-content"}}
+<div class="panel-div language-select">
+	<div class="panel-header">{{.GetText "Selection"}}</div>
+	<form ng-app ng-controller="LanguageCtrl" ng-submit="submit()">
+		<div class="language-div">
+			<div class="language-label">{{.GetText "Language 1"}}</div>
 			<select ng-model="languageA"
+							required
 							ng-change="changeA(languageA)"
 							ng-options="lang.Label for lang in languages track by lang.Code">
+					{{if not .Data.HasA}}<option value="">-- {{.GetText "Please select"}} --</option>{{end}}
 			</select>
-		</td><td>
-			{{.GetText "Language:"}}
+			<div ng-show="languageA.Text.length > 1">
+				{{.GetText "Text version"}}
+				<select ng-model="textA"
+								ng-options="text.Comment for text in languageA.Text">
+				</select>
+			</div>
+		</div>
+		
+		<div class="language-div">
+			<div class="language-label">{{.GetText "Language 2"}}</div>
 			<select ng-model="languageB"
 							ng-change="changeB(languageB)"
 							ng-options="lang.Label for lang in languages track by lang.Code">
 					<option value="">-- {{.GetText "Nothing"}} --</option>
 			</select>
-		</td>
-	</tr>
-	<tr ng-if="(languageA.Text.Length > 1) || (languageB.Text.Length > 1)">
-		<td>
-			<div ng-if="languageA.Text.length > 1">
-				{{.GetText "Text version:"}}
-				<select ng-model="textA"
-								ng-options="text.Comment for text in languageA.Text">
-				</select>
-			</div>
-			<div ng-if="languageA.Text.length == 1">
-				{{.GetText "There is only one version in this language."}}
-			</div>
-		</td>
-		<td>
-			<div ng-if="languageB && (languageB.Text.length > 1)">
-				{{.GetText "Text version:"}}
+			<div ng-show="languageB.Text.length > 1">
+				{{.GetText "Text version"}}
 				<select ng-model="textB"
 								ng-options="text.Comment for text in languageB.Text">
 				</select>
 			</div>
-			<div ng-if="languageB && (languageB.Text.length == 1)">
-				{{.GetText "There is only one version in this language."}}
-			</div>
-		</td>
-	</tr>
-	<tr ng-if="languageA || languageB">
-		<td>
-			<div ng-if="languageA">
-				{{.GetText "Summary:"}}
-				{{"{{textA.Summary}}"}}
-			</div>
-		</td>
-		<td>
-			<div ng-if="languageB">
-				{{.GetText "Summary:"}}
-				{{"{{textB.Summary}}"}}
-			</div>
-		</td>
-	</tr>
-</tbody></table>
-<input type="submit" class="submit" value="{{.GetText "Display selection"}}">
-<a class="create-new-flavor" href="{{.LinkNewFlavor}}">{{.GetText "Create a new translation."}}</a>
-</form>
+		</div>
+
+		<input type="submit" class="button submit" value="{{.GetText "Apply"}}">
+	</form>
 </div>
+<div class="panel-div">
+	<div class="panel-header">{{.GetText "Actions"}}</div>
+	<a class="panel-action" href="{{.LinkNewFlavor}}">{{.GetText "New translation"}}</a>
+	<a class="panel-action" href="/extract/edit/new">{{.GetText "New extract"}}</a>
+</div>
+{{end}}
+
+{{define "extract-content"}}
 	{{if .Data.flavors}}<div class="extractContent" id="extractContent">
   <h1> {{template "string" .Nest .Data.flavors.Title}} </h1>
-  <div id="body">
-  {{range .Data.flavors.Blocks}}
-  {{template "block" $.Nest .}}
-  {{end}}
+		<div id="body">
+		{{range .Data.flavors.Blocks}}
+		<div class="block">{{template "block" $.Nest .}}</div>
+		{{end}}
 		</div>
 	</div>{{end}}
 {{end}}
 
 {{define "string"}}
+<div>
 	{{if .HasA}}{{if .Data.MissingA}}
 	<div class="a-side missing">{{.GetText "missing content"}}</div>
 	{{else}}
@@ -85,8 +66,9 @@
 	{{else}}
 	<div class="b-side">{{.Data.ContentB}}</div>
 	{{end}}{{end}}
+</div>
 {{end}}
 
 {{define "block"}}
-<p>{{range .Data.Units}}{{template "string" $.Nest .}}{{end}}</p>
+{{range .Data.Units}}{{template "string" $.Nest .}}{{end}}
 {{end}}

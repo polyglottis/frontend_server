@@ -26,15 +26,14 @@ func (s *EditServer) NewFlavor(context *frontend.Context, e *content.Extract) ([
 			Header:    "Create a new version of the same extract",
 			Submit:    "Save",
 		}
-		if queryLangA := context.Query.Get("a"); len(queryLangA) != 0 {
-			context.Defaults.Set("Language", queryLangA)
+		if defaultsLang := context.Defaults.Get("Language"); len(defaultsLang) == 0 {
+			context.Defaults.Set("Language", context.Query.Get("a"))
 		}
 		form.Apply(context)
 		args.Angular = true
 		args.Data = map[string]interface{}{
 			"title":           i18n.Key("New Flavor"),
 			"form":            form,
-			"Language":        context.Defaults.Get("Language"),
 			"LanguageOptions": languageOptions[1:],
 			"Flavors":         e.Flavors,
 			"errors":          context.Errors,

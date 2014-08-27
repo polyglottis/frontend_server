@@ -9,7 +9,6 @@
 			{{else}}
 				<script src="//ajax.googleapis.com/ajax/libs/angularjs/{{.AngularVersion}}/angular.min.js"></script>
 			{{end}}
-			<script>{{template "angular-script" .}}</script>
     {{end}}
   </head>
   <body>
@@ -21,18 +20,23 @@
         </a>
         <div class="account">
         {{if .LoggedIn}}
-        <a class="button newextract" href="/extract/edit/new">{{.GetText "New extract"}}</a>
         {{.UserName}}
-        <a class="button signout" href="/user/signout">{{.GetText "Sign out"}}</a>
+        <a class="signout" href="/user/signout">{{.GetText "Sign out"}}</a>
         {{else}}
-        <a class="button signup" href="/user/signup">{{.GetText "Create an account"}}</a>
-        <a class="button signin" href="/user/signin{{if ne .Context.Url "/"}}?return_to={{.Context.Url}}{{end}}">{{.GetText "Sign in"}}</a>
+        <a class="signup" href="/user/signup">{{.GetText "Create an account"}}</a>
+        <a class="signin" href="/user/signin{{if ne .Context.Url "/"}}?return_to={{.Context.Url}}{{end}}">{{.GetText "Sign in"}}</a>
         {{end}}
         </div>
         <div class="clearboth"></div>
       </div>
     </div>
+    <div class="panel">
+			<a href="/">{{.GetText "Main page"}}</a>
+			{{template "panel-content" .}}
+		</div>
     {{template "content" .}}
   </body>
+	{{if .Angular}}<script>{{template "angular-script" .}}</script>{{end}}
 </html>
 {{define "angular-script"}}{{end}}
+{{define "panel-content"}}{{end}}

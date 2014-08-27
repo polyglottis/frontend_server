@@ -13,7 +13,7 @@ import (
 
 type EditServer struct{}
 
-var editTextTmpl = templates.Parse("extract/templates/frame.html", "extract/edit/templates/text.html")
+var editTextTmpl = templates.Parse("extract/templates/actions.html", "extract/edit/templates/text.html")
 
 func (s *EditServer) EditText(context *frontend.Context, e *content.Extract, a, b *content.Flavor) ([]byte, error) {
 	return server.Call(context, func(w io.Writer, serverArgs *server.TmplArgs) error {

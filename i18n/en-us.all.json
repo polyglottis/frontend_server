@@ -10,8 +10,11 @@
 		"translation": "Sign out"
 	}, {
 		"id": "warning_sign_in",
-		"translation": "You must sign in to create or edit content. Please sign in or create an account. Otherwise your changes will not be recorded."
+		"translation": "You must sign in to create or edit content. Otherwise your changes will not be recorded."
 	}, {
+		"id": "extract_creation_hint",
+		"translation": "You are about to create a new extract. All contents are public on Polyglottis. So please make sure that you are not uploading copyrighted material."
+		},{
 	"id": "ExtractType_dialog",
 	"translation": "Dialog"
 	},{
