@@ -21,17 +21,17 @@ function LanguageCtrl($scope, $window) {
 	{{end}}
 	var slug = {{.Slug}};
 	$scope.submit = function(args) {
-		{{if .FocusOnA}}
-			var pre = "b";
-			var q = "?a={{.Focus.Language}}&at={{.Focus.Id}}&focus=a";
-		{{else}}
-			var pre = "a";
-			var q = "?b={{.Focus.Language}}&bt={{.Focus.Id}}&focus=b";
-		{{end}}
-		var loc = "/extract/edit/text/" + slug;
+		var q = "?a={{.Focus.Language}}&at={{.Focus.Id}}&focus=a";
 		if ($scope.language) {
+			{{if .FocusOnA}}
+				var pre = "b";
+			{{else}}
+				var pre = "a";
+				q = "?b={{.Focus.Language}}&bt={{.Focus.Id}}&focus=b";
+			{{end}}
 			q += "&" + pre + "=" + $scope.language.Code + "&" + pre + "t=" + $scope.text.Id;
 		}
+		var loc = "/extract/edit/text/" + slug;
 		$window.location = loc + q;
 	};
 }

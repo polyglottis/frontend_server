@@ -4,10 +4,6 @@
 	<form ng-app ng-controller="LanguageCtrl" ng-submit="submit()">
 		<div class="language-div">
 			<div class="language-label">{{.GetText "Language 1"}}</div>
-			<div class="language-selected">{{.LanguageUnderFocus}}</div>
-		</div>
-		<div class="language-div">
-			<div class="language-label">{{.GetText "Language 2"}}</div>
 			<select ng-model="language"
 							ng-change="change(language)"
 							ng-options="lang.Label for lang in languages track by lang.Code">
@@ -19,6 +15,10 @@
 								ng-options="text.Comment for text in language.Text">
 				</select>
 			</div>
+		</div>
+		<div class="language-div">
+			<div class="language-label">{{.GetText "Language 2"}}</div>
+			<div class="language-selected">{{.LanguageUnderFocus}}</div>
 		</div>
 		<input type="submit" class="button submit" value="{{.GetText "Apply"}}">
 	</form>
