@@ -25,6 +25,7 @@ homeApp.controller("HomeCtrl", function($scope, $http) {
     });
 		
 	$scope.fetchExtracts = function(langA, langB, eType) {
+		$scope.showResults = true;
 		var query = "";
 		if (langA) {
 			query += "&langA=" + langA.Value;
