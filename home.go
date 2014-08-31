@@ -22,6 +22,7 @@ func (s *Server) Home(context *frontend.Context) ([]byte, error) {
 			"title":           "home_page",
 			"LanguageOptions": languageOptions[1:],
 		}
+		args.Description = "og_description"
 		args.Angular = true
 		args.Css = "home"
 		return homeTmpl.Execute(w, args)

@@ -61,6 +61,7 @@ func (s *EditServer) NewExtract(context *frontend.Context) ([]byte, error) {
 			}},
 		}
 		form.Apply(context)
+		args.Description = "Create a new extract. All contents on Polyglottis are public."
 		args.Data = map[string]interface{}{
 			"title": i18n.Key("New Extract"),
 			"form":  form,

@@ -1,5 +1,8 @@
 [
   {
+    "id": "og_description",
+    "translation": "The first platform for all languages. This is the place to document, translate and learn all languages."
+  }, {
     "id": "Create an account",
     "translation": "Create an account"
   }, {
@@ -13,7 +16,7 @@
 		"translation": "You must sign in to create or edit content. Otherwise your changes will not be recorded."
 	}, {
 		"id": "extract_creation_hint",
-		"translation": "You are about to create a new extract. All contents are public on Polyglottis. So please make sure that you are not uploading copyrighted material."
+		"translation": "You are about to create a new extract. All contents on Polyglottis are public. So please make sure that you are not uploading copyrighted material."
 		},{
 	"id": "ExtractType_dialog",
 	"translation": "Dialog"

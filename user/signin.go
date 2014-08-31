@@ -29,6 +29,7 @@ func (s *UserServer) SignIn(context *frontend.Context) ([]byte, error) {
 			}},
 		}
 		form.Apply(context)
+		args.Description = "Sign in to Polyglottis, the open platform for all languages."
 		args.Data = map[string]interface{}{
 			"title": i18n.Key("Sign In"),
 			"form":  form,

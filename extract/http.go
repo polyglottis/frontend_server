@@ -33,6 +33,9 @@ func (s *ExtractServer) Flavor(context *frontend.Context, extract *content.Extra
 			"HasA":    flavorA != nil,
 			"HasB":    flavorB != nil,
 		}
+		if flavorA != nil {
+			args.DescriptionLitteral = flavorA.Summary
+		}
 		args.Data["LanguageOptions"], args.Data["Selection"] = args.LanguageOptions(extract)
 		args.Css = "extract"
 		return flavorTmpl.Execute(w, args)

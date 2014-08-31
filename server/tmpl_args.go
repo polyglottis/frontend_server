@@ -21,12 +21,18 @@ func GetTmplArgs(context *frontend.Context) (*TmplArgs, error) {
 }
 
 type TmplArgs struct {
-	Data         map[string]interface{}
-	Css          string // "extract" (default), "form", or other .scss file
-	Angular      bool   // angular script
-	AngularLocal bool   // angular local instead of CDN
-	Context      *frontend.Context
+	Data                map[string]interface{}
+	Css                 string // "extract" (default), "form", or other .scss file
+	Angular             bool   // angular script
+	AngularLocal        bool   // angular local instead of CDN
+	Context             *frontend.Context
+	Description         i18n.Key
+	DescriptionLitteral string // fallback if i18n.Key is not defined
 	localizer.Localizer
+}
+
+func (a *TmplArgs) CanonicalUrl() string {
+	return a.Context.ProtocolAndHost() + a.Context.Url
 }
 
 func (a *TmplArgs) AngularVersion() string { return "1.2.23" }

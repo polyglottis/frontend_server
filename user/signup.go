@@ -29,6 +29,7 @@ func (s *UserServer) SignUp(context *frontend.Context) ([]byte, error) {
 			}, passwordField(), passwordConfirmField()},
 		}
 		form.Apply(context)
+		args.Description = "Create your personal account to translate and edit contents on Polyglottis."
 		args.Data = map[string]interface{}{
 			"title": i18n.Key("Account Creation"),
 			"form":  form,

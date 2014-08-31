@@ -22,6 +22,7 @@ func (s *UserServer) ForgotPassword(context *frontend.Context) ([]byte, error) {
 			}},
 		}
 		form.Apply(context)
+		args.Description = "Enter your email address to reset your password."
 		args.Data = map[string]interface{}{
 			"title": i18n.Key("Forgot your password?"),
 			"form":  form,
